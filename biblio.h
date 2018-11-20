@@ -1,6 +1,20 @@
 #ifndef _BIBLIO_H
 #define _BIBLIO_H
 
+
+/**
+ * @author AMOKRANE Abdennour
+ * 
+ * "biblio.h"
+ * 
+ * Contient les prototypes des fonctions qui controle le API des Automate :
+ * 
+ * Creation d'Automate, Etat, Instruction ... etc. De plus le fichier contient les fonctions
+ * 
+ * qui manipule les fichier d'entrée et de sortie (Input and Output). 
+ * 
+ * **/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "structure.h"

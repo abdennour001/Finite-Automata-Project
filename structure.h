@@ -1,6 +1,19 @@
 #ifndef _STRUCTURE_H
 #define _STRUCTURE_H
 
+/**
+ * @author AMOKRANE Abdennour
+ * 
+ * "structure.h"
+ * 
+ * Contient les prototypes des fonctions qui mettre en place la structure des Automate :
+ * 
+ * Structure d'Automate, Etat, Instruction, Mot ... etc. De plus le fichier contient les fonctions
+ * 
+ * qui manipule la machine abstraite de ces structure : Allocations mémoire, setters et getters ... etc.
+ * 
+ * **/
+
 #define MAX_INT 1000
 #define EPSILON "~"
 
@@ -80,7 +93,7 @@ void afficher_mot(Mot* m);
 struct Instruction
 {
     int id;
-    Mot* mot; // mot
+    Mot* mot; // mot lu
     Etat* etat_src; // Si : état source
     Etat* etat_dest; // Sj : état destination
 };

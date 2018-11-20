@@ -4,6 +4,15 @@
 #include "structure.h"
 #include "biblio.h"
 
+/**
+ * @author AMOKRANE Abdennour
+ * 
+ * "main.c"
+ * 
+ * Le Fichier principale du programme.
+ * 
+ * **/
+
 
 int main(int argc, char const *argv[])
 {

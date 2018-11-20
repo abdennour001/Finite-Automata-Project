@@ -1,7 +1,18 @@
+
+/**
+ * @author AMOKRANE Abdennour
+ * 
+ * "structure.c"
+ * 
+ * Implementation des fonctions du "structure.h"
+ * 
+ * **/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "structure.h"
+
 
 int ID_ETAT_SYS=0;
 int ID_INSTRUCTION_SYS=0;

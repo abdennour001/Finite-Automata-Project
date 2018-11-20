@@ -1,3 +1,13 @@
+
+/**
+ * @author AMOKRANE Abdennour
+ * 
+ * "biblio.c"
+ * 
+ * Implementation des fonctions de "biblio.h"
+ * 
+ * **/
+
 #include "biblio.h"
 #include "structure.h"
 #include <stdio.h>

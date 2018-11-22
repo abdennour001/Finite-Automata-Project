@@ -12,6 +12,7 @@
  * 
  * **/
 
-
+void aff_msg_debut();
+void aff_menu();
 
 #endif

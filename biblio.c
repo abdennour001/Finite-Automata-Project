@@ -37,11 +37,13 @@ char** separer_chaine(char* chaine, char* separateur, int *longeur) {
     char** splits;
     char* token;
     int i=0;
-    splits = malloc(sizeof(char*));
+
+    splits = (char** )malloc(MAX_INT * sizeof(char));
     token = strtok(chaine, separateur);
-	splits[i] = malloc(sizeof(char));
     while (token != NULL) {
-		splits[i++] = token;
+        splits[i] = (char* ) malloc(MAX_INT * sizeof(char));
+		strcpy(splits[i], token);
+        i++;
         token = strtok(NULL, separateur);
     }
     *longeur = i;
@@ -60,14 +62,15 @@ Automate* lire_fichier_init(char* nom_fichier_init) {
 
     FILE* _fichier_init_ = ouvrir_fichier();
     if (_fichier_init_ == NULL) exit(-1);
-    nom_alphabet = (char* )malloc(sizeof(char));
+    nom_alphabet = (char* )malloc(30 * sizeof(char));
+    nom_automate = (char* )malloc(30 * sizeof(char));
 
     // Lire ligne par ligne
     while (fgets(ligne, len, _fichier_init_) != NULL) {
         //puts(ligne);
         switch (++num_ligne) {
             case 2:
-                nom_automate = separer_chaine(ligne, " \n", &i)[0];
+                strcpy(nom_automate, separer_chaine(ligne, " \n", &i)[0]);
                 //printf("Nom de l'automate : %s\n", nom_automate);
                 break;
             case 3:
@@ -75,22 +78,25 @@ Automate* lire_fichier_init(char* nom_fichier_init) {
                 strcpy(nom_alphabet, aig3[0]);
                 nombre_lettres = converter_chaine_entier(aig3[1]);
                 //printf("Nom de l'alphabet : %s, %d\n", nom_alphabet, nombre_lettres);
+                free(aig3);
                 break;
             case 4:
                 aig = separer_chaine(ligne, " \n", &i);
                 nombre_etats = converter_chaine_entier(aig[0]);
                 //printf("Nombre d'états : %d\n", nombre_etats);
+                free(aig);
                 break;
             case 5:
                 aig = separer_chaine(ligne, " \n", &i);
                 nombre_instructions = converter_chaine_entier(aig[0]);
                 //printf("Nombre d'instruction : %d\n", nombre_instructions);
+                free(aig);
                 break;
             case 6:
                 aig6 = separer_chaine(ligne, " \n", &i);
                 alphabet = aig6;
                 /*for(int j=0; alphabet[j] != NULL; j++) {
-                    //puts(alphabet[j]);
+                    //puts(aig6[j]);
                 }*/
                 // Creation de l'alphabet.
                 alph = creer_alphabet(nom_alphabet, nombre_lettres, alphabet);
@@ -185,6 +191,7 @@ Automate* lire_fichier_init(char* nom_fichier_init) {
 
     // Creation de l'automate
     Automate *automate;
+    printf("*%d*\n", etat_init->id);
     automate = creer_automate(nombre_etats, nombre_etats_finaux, nombre_instructions, nom_automate, alph, etat_init, ensemble_etats, ensemble_etats_finaux, ensemble_instruction);
     return automate;
 }

@@ -33,7 +33,7 @@ char* status_to_string(Status status) {
 Etat* alloc_etat() {
     Etat* e;
     e = (Etat* ) malloc(sizeof(Etat));
-    e->nom = (char* ) malloc(sizeof(char));
+    e->nom = (char* ) malloc(MAX_INT * sizeof(char));
     return e;
 }
 void set_nom_etat(Etat* e, char* nom) {
@@ -69,13 +69,13 @@ Etat* rechercher_etat_par_nom(Etat** ensemble_etats, char* nom) {
 Alphabet* alloc_alphabet() {
     Alphabet* a;
     a = (Alphabet* ) malloc(sizeof(Alphabet));
-    a->nom  = (char* ) malloc(sizeof(char));
-    a->ensemble_lettres = (char**) malloc(sizeof(char));
+    a->nom  = (char* ) malloc(MAX_INT * sizeof(char));
+    a->ensemble_lettres = (char**) malloc(MAX_INT * sizeof(char));
     return a;
 }
 void set_ensemble_lettres(Alphabet* a, int nombre_lettres, char** ensemble) {
     for (int i=0; i < nombre_lettres; i++) {
-        a->ensemble_lettres[i] = (char* ) malloc(sizeof(char));
+        a->ensemble_lettres[i] = (char* ) malloc(MAX_INT * sizeof(char));
         strcpy(a->ensemble_lettres[i], ensemble[i]);
     };
     a->nombre_lettres = nombre_lettres;
@@ -88,8 +88,8 @@ void set_nom_alphabet(Alphabet* a, char* nom) {
 }
 void afficher_alphabet(Alphabet* a) {
     char output[50];
-    sprintf(output, "%s {", a->nom);
-    for (int i=0; a->ensemble_lettres[i] != NULL; i++) {
+    sprintf(output, "%s = {", a->nom);
+    for (int i=0; i < a->nombre_lettres; i++) {
         if (i==0) {
             sprintf (output, "%s%s", output, a->ensemble_lettres[i]);
         } else {
@@ -107,13 +107,13 @@ void afficher_alphabet(Alphabet* a) {
 Mot* alloc_mot() {
     Mot* m;
     m = (Mot *) malloc(sizeof(Mot));
-    m->vecteur_mot = (char **) malloc(sizeof(char));
+    m->vecteur_mot = (char **) malloc(MAX_INT * sizeof(char));
     return m;
 }
 void set_vecteur_mot(Mot* m, int longeur, char** mot) {
     m->longeur = longeur;
     for (int i=0; i < longeur; i++) {
-        m->vecteur_mot[i] = (char* ) malloc(sizeof(char));
+        m->vecteur_mot[i] = (char* ) malloc(MAX_INT * sizeof(char));
         strcpy(m->vecteur_mot[i], mot[i]);
     }
 }
@@ -123,7 +123,7 @@ char** get_vecteur_mot(Mot* m) {
 
 void afficher_mot(Mot* m) {
     char output[30]="";
-    for (int i=0; m->vecteur_mot[i] != NULL; i++) {
+    for (int i=0; i < m->longeur; i++) {
         if (strcmp(output, "") == 0) {
         sprintf(output, "%s", m->vecteur_mot[i]);
         } else {
@@ -177,7 +177,7 @@ void afficher_instruction_sans_detail(Instruction *i) {
 Automate* alloc_automate() {
     Automate* a;
     a = (Automate* ) malloc(sizeof(Automate));
-    a->nom = (char *) malloc(sizeof(char));
+    a->nom = (char *) malloc(MAX_INT * sizeof(char));
     return a;
 }
 void set_alphabet(Automate* a, Alphabet* alphabet) {
@@ -236,23 +236,24 @@ void afficher_automate(Automate *a) {
     printf("\n\n");
     // Afficher F
     printf("Etats finaux F : \n\n");
-    for (int i=0; a->ensemble_etat_finaux[i] != NULL; i++) {
+    for (int i=0; i < a->nombre_etats_finaux; i++) {
         afficher_etat(a->ensemble_etat_finaux[i]);
         printf("\n");
     }
     printf("\n");
     // Afficher S
     printf("Etats S : \n\n");
-    for (int i=0; a->ensemble_etat[i] != NULL; i++) {
+    for (int i=0; i < a->nombre_etat; i++) {
         afficher_etat(a->ensemble_etat[i]);
         printf("\n");
     }
     // Afficher II
     printf("\nInstructions II : \n\n");
-    for (int i=0; a->ensemble_instruction[i] != NULL; i++) {
+    for (int i=0; i < a->nombre_instructions; i++) {
         afficher_instruction_sans_detail(a->ensemble_instruction[i]);
         printf("\n");
     }
+    printf("\n");
 }
 
 /******/

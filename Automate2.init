@@ -1,0 +1,28 @@
+DEBUT;
+A2 < X, S0, F, S, II >
+Y2 11
+10
+11
+0 1 2 3 4 5 6 7 8 9 10
+e0 INIT
+e1
+e2 FINAL
+e3 FINAL
+e4 FINAL
+e5
+e6 FINAL
+e7 
+e8 FINAL
+e9
+e0, 1, e1
+e0, 1 2, e2
+e1, 2, e3
+e1, 1, e2
+e2, 1 1,e2
+e1,,e0
+e6,,e6
+e6, 1 2 3, e5
+e5, 1 2 3 4, e5
+e1, 3 2 9 7 10, e5
+e9,,e8
+FIN;

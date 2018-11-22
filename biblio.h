@@ -40,4 +40,27 @@ Instruction* creer_instruction(int id, Mot* mot, Etat* etat_src, Etat* etat_dest
 Automate* creer_automate(int n_e, int n_ef, int n_i, char* nom, Alphabet* alphabet, Etat* e_init, Etat** ensemble_etats, Etat** ensemble_etats_finaux, Instruction** ensemble_i);
 /****/
 
+/** API de manupilation des Automates **/
+
+void ajouter_etat(Automate* a, Etat* etat);
+void supprimer_etat(Automate* a, Etat* etat);
+void supprimer_etat_nom(Automate* a, char* nom);
+void supprimer_etat_id(Automate* a, int id);
+void ajouter_instruction(Automate* a, Instruction* inst);
+void supprimer_instruction(Automate* a, Instruction* instr);
+void modifier_etat_status(Automate* a, Etat* etat, Status s);
+
+/**/
+
+int auto_est_simple(Automate* automate);
+int auto_est_deterministe(Automate* automate);
+int auto_est_complet(Automate* automate);
+int etat_est_accessible(Automate* a, Etat* etat);
+int etat_est_Co_accessible(Automate* a, Etat* etat);
+Automate* rendez_simple(Automate* automate);
+Automate* rendez_deterministe(Automate* automate);
+Automate* rendez_complet(Automate* automate);
+
+/****/
+
 #endif

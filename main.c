@@ -38,9 +38,9 @@ void test_unitaire() {
     //ajouter_etat(automate, e);
     //ajouter_etat(automate, e1);
     //ajouter_etat(automate, e2);
-    supprimer_etat(automate, automate->ensemble_etat[2]);
-    supprimer_etat(automate, automate->ensemble_etat[1]);
-    ajouter_instruction(automate, automate->ensemble_instruction[0]);
+    //supprimer_etat(automate, automate->ensemble_etat[2]);
+    //supprimer_etat(automate, automate->ensemble_etat[1]);
+    //ajouter_instruction(automate, automate->ensemble_instruction[0]);
     //ajouter_etat(automate, e2);
     afficher_automate(automate);
     //Automate* automate2 = nouvelle_automate("./Automate2.init");

@@ -110,11 +110,13 @@ Automate* lire_fichier_init(char* nom_fichier_init) {
     // creation des états, des instructions, les ensembles d'état, les
     // ensemble d'états finauxn, l'état initial et l'ensemble des instruction.
 
+    Etat** ensemble_etats_init; int nombre_etats_init=0; // ensemble des etats initiaux
     Etat** ensemble_etats; // ensemble des etats
     Etat** ensemble_etats_finaux; // ensemble des etats finaux
     Instruction** ensemble_instruction; // ensemble des instructions
     Etat* etat_init;
 
+    ensemble_etats_init = (Etat** ) malloc(nombre_etats * sizeof(Etat)); // Allouer nombre_etats au max pour les etats initiaux
     ensemble_instruction = malloc(nombre_instructions * sizeof(Instruction)); // Allouer nombre_instruction Instruction dans la memoire
     ensemble_etats = malloc(nombre_etats * sizeof(Etat)); // Allouer nombre_etat Etat dans la memoire
     ensemble_etats_finaux = malloc(sizeof(Etat));
@@ -134,8 +136,9 @@ Automate* lire_fichier_init(char* nom_fichier_init) {
                 etat_ = creer_etat(++ID_ETAT_SYS, etat[0], FINAL);
                 ensemble_etats_finaux[nombre_etats_finaux++] = etat_;
             } else if (strcmp(etat[1], "INIT") == 0) {
+                ensemble_etats_init[nombre_etats_init] = malloc(sizeof(Etat));
                 etat_ = creer_etat(++ID_ETAT_SYS, etat[0], INITIAL);
-                etat_init = etat_;
+                ensemble_etats_init[nombre_etats_init++] = etat_;
             }
         } else {
             etat_ = creer_etat(++ID_ETAT_SYS, etat[0], NORMAL);
@@ -182,12 +185,32 @@ Automate* lire_fichier_init(char* nom_fichier_init) {
             strcpy(aig_etat[1], separer_chaine(sauv_dest, " ", &i)[0]);
             etat_dest_ = rechercher_etat_par_nom(ensemble_etats, aig_etat[1]);
         }
-        //afficher_etat(etat_src_);
-        //afficher_etat(etat_dest_);
-        //afficher_mot(mot_);
         instruction_ = creer_instruction(++ID_INSTRUCTION_SYS, mot_, etat_src_, etat_dest_);
         ensemble_instruction[o] = instruction_;
     }
+
+    /* Faire la transition EPSILON des états initiaux */
+
+    if (nombre_etats_init == 1) { // un seul état initiale
+        etat_init = ensemble_etats_init[0];
+    } else { // plusieur états initaux
+        char nom_init[30]; char** mot_epsilon=(char**) malloc(sizeof(char));
+        mot_epsilon[0] = malloc(sizeof(char));
+        strcpy(mot_epsilon[0], EPSILON);
+        Mot* mot=creer_mot(1, mot_epsilon);
+        sprintf(nom_init, "Si_%d", ++ID_ETAT_SYS);
+        Etat* _etat_init_ = creer_etat(ID_ETAT_SYS, nom_init, INITIAL);
+        ensemble_etats[nombre_etats++] = _etat_init_;
+        etat_init = _etat_init_;
+        for (int x=0; x<nombre_etats_init; x++) {
+            ensemble_etats_init[x]->status = NORMAL;
+            Instruction* i_epsilon=creer_instruction(++ID_INSTRUCTION_SYS, mot, etat_init, ensemble_etats_init[x]);
+            ensemble_instruction[nombre_instructions] = (Instruction*) malloc(sizeof(Instruction));
+            ensemble_instruction[nombre_instructions++] = i_epsilon; 
+        }
+    }
+
+    /**/
 
     // Creation de l'automate
     Automate *automate;

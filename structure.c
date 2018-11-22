@@ -292,7 +292,9 @@ void set_ensemble_instruction(Automate* a, Instruction** e_i) {
     a->ensemble_instruction = e_i;
 }
 void ajouter_instruction(Automate* a, Instruction* i) {
-    a->ensemble_instruction[a->nombre_instructions++] = i;
+    if (rechercher_instruction(a, i->etat_src, i->etat_dest, i->mot) == NULL) {
+        a->ensemble_instruction[a->nombre_instructions++] = i;
+    }
 }
 
 void supprimer_instruction(Automate* a, Instruction* i) {

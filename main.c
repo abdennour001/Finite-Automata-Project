@@ -31,7 +31,7 @@ Automate* nouvelle_automate(char* nom_fichier_init) {
 }
 
 void test_unitaire() {
-    Automate* automate = nouvelle_automate("./Automate2.init");
+    Automate* automate = nouvelle_automate("./Automate.init");
     Etat* e=creer_etat(++ID_ETAT_SYS, "new_etat1", FINAL);
     Etat* e1=creer_etat(++ID_ETAT_SYS, "new_etat2", NORMAL);
     Etat* e2=creer_etat(++ID_ETAT_SYS, "new_etat3", FINAL);
@@ -40,6 +40,7 @@ void test_unitaire() {
     //ajouter_etat(automate, e2);
     supprimer_etat(automate, automate->ensemble_etat[2]);
     supprimer_etat(automate, automate->ensemble_etat[1]);
+    ajouter_instruction(automate, automate->ensemble_instruction[0]);
     //ajouter_etat(automate, e2);
     afficher_automate(automate);
     //Automate* automate2 = nouvelle_automate("./Automate2.init");

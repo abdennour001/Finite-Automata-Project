@@ -87,6 +87,7 @@ Mot* alloc_mot();
 void set_vecteur_mot(Mot* m, int longeur, char** mot);
 char** get_vecteur_mot(Mot* m);
 void afficher_mot(Mot* m);
+int mot_compare(Mot* mot1, Mot* mot2);
 /**/
 
 /* Structure d'une instruction II = (Si, mot, Sj) */
@@ -139,6 +140,7 @@ void afficher_automate(Automate *a);
 
 void set_ensemble_etat(Automate* a, Etat** e_e);
 void ajouter_etat(Automate* a, Etat* etat);
+void supprimer_etat(Automate* a, Etat* etat);
 
 //---------
 
@@ -149,6 +151,8 @@ void ajouter_etat_final(Automate* a, Etat* e_f);
 
 void set_ensemble_instruction(Automate* a, Instruction** e_i);
 void ajouter_instruction(Automate* a, Instruction* i);
+void supprimer_instruction(Automate* a, Instruction* i);
+Instruction* rechercher_instruction(Automate* a, Etat* src, Etat* dest, Mot* mot);
 
 /****/
 

@@ -191,7 +191,6 @@ Automate* lire_fichier_init(char* nom_fichier_init) {
 
     // Creation de l'automate
     Automate *automate;
-    printf("*%d*\n", etat_init->id);
     automate = creer_automate(nombre_etats, nombre_etats_finaux, nombre_instructions, nom_automate, alph, etat_init, ensemble_etats, ensemble_etats_finaux, ensemble_instruction);
     return automate;
 }
@@ -239,6 +238,12 @@ Automate* creer_automate(int n_e, int n_ef, int n_i, char* nom, Alphabet* alphab
     set_ensemble_instruction(a, ensemble_i);
     return a;
 }
+/****/
+
+/** API de manupilation des Automates **/
+
+
+
 /****/
 
 /****/

@@ -42,16 +42,6 @@ Automate* creer_automate(int n_e, int n_ef, int n_i, char* nom, Alphabet* alphab
 
 /** API de manupilation des Automates **/
 
-void ajouter_etat(Automate* a, Etat* etat);
-void supprimer_etat(Automate* a, Etat* etat);
-void supprimer_etat_nom(Automate* a, char* nom);
-void supprimer_etat_id(Automate* a, int id);
-void ajouter_instruction(Automate* a, Instruction* inst);
-void supprimer_instruction(Automate* a, Instruction* instr);
-void modifier_etat_status(Automate* a, Etat* etat, Status s);
-
-/**/
-
 int auto_est_simple(Automate* automate);
 int auto_est_deterministe(Automate* automate);
 int auto_est_complet(Automate* automate);

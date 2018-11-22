@@ -133,6 +133,18 @@ void afficher_mot(Mot* m) {
     printf("%s", output);
 }
 
+int mot_compare(Mot* mot1, Mot* mot2) {
+    if (mot1->longeur != mot2->longeur) return 0;
+    else {
+        for (int i=0; i<mot1->longeur; i++) {
+            if (strcmp(mot1->vecteur_mot[i], mot2->vecteur_mot[i])) {
+                return 0;
+            }
+        }
+    }
+    return 1;
+}
+
 /**/
 
 /* Implementation des fonctions d'Instruction */
@@ -169,6 +181,15 @@ void afficher_instruction_sans_detail(Instruction *i) {
     afficher_etat_sans_detail(i->etat_dest);
 }
 
+Instruction* rechercher_instruction(Automate* a, Etat* src, Etat* dest, Mot* mot) {
+    for (int i=0; i < a->nombre_instructions; i++) {
+        if (!strcmp(a->ensemble_instruction[i]->etat_src->nom, src->nom) &&
+            !strcmp(a->ensemble_instruction[i]->etat_dest->nom, dest->nom) &&
+            mot_compare(a->ensemble_instruction[i]->mot, mot)) {
+                return a->ensemble_instruction[i];
+            }
+    }
+}
 
 /**/
 
@@ -205,7 +226,55 @@ void set_ensemble_etat(Automate* a, Etat** e_e) {
     a->ensemble_etat = e_e;
 }
 void ajouter_etat(Automate* a, Etat* etat) {
-    a->ensemble_etat[a->nombre_etat++] = etat;
+    if (etat->status == NORMAL) {
+        a->ensemble_etat[a->nombre_etat++] = etat;
+    } else if (etat->status == FINAL) {
+        a->ensemble_etat[a->nombre_etat++] = etat;
+        ajouter_etat_final(a, etat);
+    } else if (etat->status == INITIAL) {
+        // ajouter un état initial
+    }
+}
+void supprimer_etat(Automate* a, Etat* etat) {
+
+    if (etat->status == INITIAL) {
+        puts("On ne peut pas supprimer un état initial.");
+        abort();
+    }
+
+    for (int i=0; i<a->nombre_etat; i++) { // recherche de l'état
+        if (!strcmp(a->ensemble_etat[i]->nom, etat->nom)) {
+            a->nombre_etat--;
+            for (int j=i; j < a->nombre_etat; j++) {
+                a->ensemble_etat[j] = a->ensemble_etat[j+1];
+            }
+            if (etat->status == FINAL) { // si l'état est final alors on supprime l'état.
+                for (int k=0; k < a->nombre_etats_finaux; k++) {
+                    if (!strcmp(a->ensemble_etat_finaux[k]->nom, etat->nom)) {
+                        a->nombre_etats_finaux--;
+                        for (int l=k; l < a->nombre_etats_finaux; l++) {
+                            a->ensemble_etat_finaux[l] = a->ensemble_etat_finaux[l+1];
+                        }
+                        break;
+                    }
+                }
+            }
+            break;
+        }
+    }
+
+    // supprimer les instructions de l'état supprimé.
+    Instruction** aig=(Instruction** ) malloc(MAX_INT * sizeof(Instruction*));int aig_=0;
+    for (int i=0; i<a->nombre_instructions; i++) {
+        if (!strcmp(a->ensemble_instruction[i]->etat_src->nom, etat->nom) || !strcmp(a->ensemble_instruction[i]->etat_dest->nom, etat->nom)) {
+            aig[aig_++] = a->ensemble_instruction[i];
+            //supprimer_instruction(a, a->ensemble_instruction[i]);
+        }
+    }
+    for (int j=0; j<aig_; j++) {
+        supprimer_instruction(a, aig[j]);
+    }
+    free(aig);
 }
 
 //---------
@@ -225,6 +294,19 @@ void set_ensemble_instruction(Automate* a, Instruction** e_i) {
 void ajouter_instruction(Automate* a, Instruction* i) {
     a->ensemble_instruction[a->nombre_instructions++] = i;
 }
+
+void supprimer_instruction(Automate* a, Instruction* i) {
+    for (int j=0; j<a->nombre_instructions; j++) {
+        if (a->ensemble_instruction[j] == rechercher_instruction(a, i->etat_src, i->etat_dest, i->mot)) {
+            a->nombre_instructions--;
+            for (int k=j; k<a->nombre_instructions; k++) {
+                a->ensemble_instruction[k] = a->ensemble_instruction[k+1];
+            }
+            break;       
+        }
+    }
+}
+
 void afficher_automate(Automate *a) {
     printf("%s < X, S0, F, S, II >\n\n", a->nom);
     // Afficher X

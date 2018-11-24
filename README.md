@@ -6,8 +6,6 @@ A finite automaton (FA) is a simple idealized machine used to recognize patterns
 
 # General form of .init file to create an Automata
 
-#Structure de fichier "Automate.init"
-
 ***!!!*** *@X@* == X est sans espaces ***!!!*** <br/>
 ***!!!*** *@X@* *@Y@* ... @Z@ == X, Y et Z sont séparés par un espace ***!!!** <br/>
 ***!!!*** *@status@* == status dans {INIT, FINAL} ***!!!*** <br/>
@@ -33,4 +31,4 @@ A finite automaton (FA) is a simple idealized machine used to recognize patterns
 .<br/>
 .<br/>
 *@etat_src_k@***,** *@mot_lu_k@***,** *@etat_dest_k@*<br/>  
-**FIN;**<br/>
+**FIN;**

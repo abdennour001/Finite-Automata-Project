@@ -86,11 +86,11 @@ void mise_a_jour_etat(Automate *a, Etat* e, int id, char* nom, Status s) {
         }
     } else {
         if (e->status == FINAL) {
-
+            // pass
         } else if (e->status == INITIAL) {
-
+            // pass
         } else {
-            
+            // pass
         }
     }
 }

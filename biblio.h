@@ -38,6 +38,8 @@ Alphabet* creer_alphabet(char* nom, int nombre_lettres, char** ensemble_lettres)
 Mot* creer_mot(int longeur, char** vecteur_mot);
 Instruction* creer_instruction(int id, Mot* mot, Etat* etat_src, Etat* etat_dest);
 Automate* creer_automate(int n_e, int n_ef, int n_i, char* nom, Alphabet* alphabet, Etat* e_init, Etat** ensemble_etats, Etat** ensemble_etats_finaux, Instruction** ensemble_i);
+Automate* nouvelle_automate(char* nom_fichier_init); // creer autommate à partir d'un fichier
+
 /****/
 
 /** API de manupilation des Automates **/

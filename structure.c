@@ -268,7 +268,6 @@ void supprimer_etat(Automate* a, Etat* etat) {
     for (int i=0; i<a->nombre_instructions; i++) {
         if (!strcmp(a->ensemble_instruction[i]->etat_src->nom, etat->nom) || !strcmp(a->ensemble_instruction[i]->etat_dest->nom, etat->nom)) {
             aig[aig_++] = a->ensemble_instruction[i];
-            //supprimer_instruction(a, a->ensemble_instruction[i]);
         }
     }
     for (int j=0; j<aig_; j++) {

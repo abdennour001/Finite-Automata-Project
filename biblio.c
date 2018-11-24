@@ -261,10 +261,79 @@ Automate* creer_automate(int n_e, int n_ef, int n_i, char* nom, Alphabet* alphab
     set_ensemble_instruction(a, ensemble_i);
     return a;
 }
+
+Automate* nouvelle_automate(char* nom_fichier_init) {
+    Automate* automate=lire_fichier_init(nom_fichier_init);
+    return automate;
+}
+
 /****/
 
 /** API de manupilation des Automates **/
 
+int auto_est_simple(Automate* automate) {
+    for (int i=0; i<automate->nombre_instructions; i++) {
+        if (automate->ensemble_instruction[i]->mot->longeur > 1 || !strcmp(automate->ensemble_instruction[i]->mot->vecteur_mot[0], EPSILON)) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int auto_est_deterministe(Automate* automate) {
+    if (!auto_est_simple(automate)) return 0;
+    int cpt_vec[automate->alphabet->nombre_lettres];
+
+    for (int i=0; i<automate->nombre_etat; i++) {
+        // initialisé le vecteur des compteurs à 0 pour chaque état.
+        for (int i=0; i<automate->alphabet->nombre_lettres; i++) {
+            cpt_vec[i] = 0;
+        }
+        for (int j=0; j<automate->nombre_instructions; j++) {
+            if (!strcmp(automate->ensemble_instruction[j]->etat_src->nom, automate->ensemble_etat[i]->nom)) {
+                for (int k=0; k<automate->alphabet->nombre_lettres; k++) {
+                    if (!strcmp(automate->ensemble_instruction[j]->mot->vecteur_mot[0], automate->alphabet->ensemble_lettres[k])) {
+                        if (++cpt_vec[k] > 1) goto non_det;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    return 1;
+    non_det:
+    return 0;
+}
+
+int auto_est_complet(Automate* automate) {
+    if (!auto_est_simple(automate)) return 0;
+    int cpt_vec[automate->alphabet->nombre_lettres];
+
+    for (int i=0; i<automate->nombre_etat; i++) {
+        // initialisé le vecteur des compteurs à 0 pour chaque état.
+        for (int i=0; i<automate->alphabet->nombre_lettres; i++) {
+            cpt_vec[i] = 0;
+        }
+        for (int j=0; j<automate->nombre_instructions; j++) {
+            if (!strcmp(automate->ensemble_instruction[j]->etat_src->nom, automate->ensemble_etat[i]->nom)) {
+                for (int k=0; k<automate->alphabet->nombre_lettres; k++) {
+                    if (!strcmp(automate->ensemble_instruction[j]->mot->vecteur_mot[0], automate->alphabet->ensemble_lettres[k])) {
+                        if (++cpt_vec[k] > 1) goto non_det;
+                        break;
+                    }
+                }
+            }
+        }
+        for (int l=0; l<automate->alphabet->nombre_lettres; l++) {
+            if (cpt_vec[l] != 1) {
+                return 0;
+            }
+        }
+    }
+    return 1;
+    non_det:
+    return 0;
+}
 
 
 /****/

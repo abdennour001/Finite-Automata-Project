@@ -139,6 +139,14 @@ Automate* lire_fichier_init(char* nom_fichier_init) {
                 ensemble_etats_init[nombre_etats_init] = malloc(sizeof(Etat));
                 etat_ = creer_etat(++ID_ETAT_SYS, etat[0], INITIAL);
                 ensemble_etats_init[nombre_etats_init++] = etat_;
+            } else if (strcmp(etat[1], "INIT&FINAL") == 0) {
+                etat_ = creer_etat(++ID_ETAT_SYS, etat[0], INITIAL_FINAL);
+                // ajouter final
+                ensemble_etats_finaux[nombre_etats_finaux] = malloc(sizeof(Etat));
+                ensemble_etats_finaux[nombre_etats_finaux++] = etat_;
+                // ajouter initial 
+                ensemble_etats_init[nombre_etats_init] = malloc(sizeof(Etat));
+                ensemble_etats_init[nombre_etats_init++] = etat_;
             }
         } else {
             etat_ = creer_etat(++ID_ETAT_SYS, etat[0], NORMAL);
@@ -167,6 +175,7 @@ Automate* lire_fichier_init(char* nom_fichier_init) {
             strcpy(sauv, aig_etat[1]);
             aig_mot = separer_chaine(sauv, " ", &nombre_lettre_mot_lecture);
         } else {
+            aig_mot[0] = (char *)malloc(sizeof(char));
             strcpy(aig_mot[0], EPSILON);
             nombre_lettre_mot_lecture = 1;
         }
@@ -203,7 +212,11 @@ Automate* lire_fichier_init(char* nom_fichier_init) {
         ensemble_etats[nombre_etats++] = _etat_init_;
         etat_init = _etat_init_;
         for (int x=0; x<nombre_etats_init; x++) {
-            ensemble_etats_init[x]->status = NORMAL;
+            if (ensemble_etats_init[x]->status == INITIAL_FINAL) {
+                ensemble_etats_init[x]->status = FINAL;
+            } else {
+                ensemble_etats_init[x]->status = NORMAL;
+            }
             Instruction* i_epsilon=creer_instruction(++ID_INSTRUCTION_SYS, mot, etat_init, ensemble_etats_init[x]);
             ensemble_instruction[nombre_instructions] = (Instruction*) malloc(sizeof(Instruction));
             ensemble_instruction[nombre_instructions++] = i_epsilon; 
@@ -216,6 +229,10 @@ Automate* lire_fichier_init(char* nom_fichier_init) {
     Automate *automate;
     automate = creer_automate(nombre_etats, nombre_etats_finaux, nombre_instructions, nom_automate, alph, etat_init, ensemble_etats, ensemble_etats_finaux, ensemble_instruction);
     return automate;
+}
+
+void concat_chaine(char *a, char *b) {  // Concatener a et b, le resultat dans a.
+    strcat(a, b);
 }
 
 /** API de creation des Automates **/
@@ -335,14 +352,105 @@ int auto_est_complet(Automate* automate) {
     return 0;
 }
 
-Automate* rendez_simple(Automate* automate) {
+int rendez_simple(Automate* automate) {
     // élimination des transitions par mots
+
+    // ensemble des instructions à éliminer
+    Instruction **ensemble_a_eliminer = (Instruction **) malloc(automate->nombre_instructions * sizeof(Instruction)); // au max
+    int elm_ = 0;
+    int etat_=0;
+    // ensemble des instructions à ajouter
+    Instruction **ensemble_a_ajouter = (Instruction **) malloc(automate->nombre_instructions * sizeof(Instruction)); // au max
+    int ajouter_ = 0;
+
     for (int i=0; i<automate->nombre_instructions; i++) {
+        etat_ = 0;
         if (automate->ensemble_instruction[i]->mot->longeur > 1) {
-            
+            ensemble_a_eliminer[elm_++] = automate->ensemble_instruction[i];
+            for (int o=0; o<automate->ensemble_instruction[i]->mot->longeur; o++) {
+                char** vecteur_mot=(char** ) malloc(sizeof(char*));
+                vecteur_mot[0] = malloc(MAX_INT * sizeof(char));
+                strcpy(vecteur_mot[0], automate->ensemble_instruction[i]->mot->vecteur_mot[o]);
+                Mot* nouveau_mot = creer_mot(1, vecteur_mot);
+                Instruction *nouvelle_inst=NULL;
+                if (o==0) {
+                    char *nom=(char *) malloc(MAX_INT * sizeof(char));
+                    char *nom_src = (char *) malloc(MAX_INT * sizeof(char)), *nom_dest = (char *) malloc(MAX_INT * sizeof(char));
+                    strcpy(nom_src, automate->ensemble_instruction[i]->etat_src->nom);
+                    strcpy(nom_dest, automate->ensemble_instruction[i]->etat_dest->nom);
+                    concat_chaine(nom_src, nom_dest);
+                    strcpy(nom, nom_src);
+                    sprintf(nom, "%s_%d", nom, etat_++);            
+                    Etat* nouveau_etat=creer_etat(++ID_ETAT_SYS, nom, NORMAL);
+                    ajouter_etat(automate,nouveau_etat);
+
+                    nouvelle_inst = creer_instruction(++ID_INSTRUCTION_SYS, nouveau_mot, automate->ensemble_instruction[i]->etat_src, nouveau_etat);
+                } else if(o==automate->ensemble_instruction[i]->mot->longeur - 1) {
+                    nouvelle_inst = creer_instruction(++ID_INSTRUCTION_SYS, nouveau_mot, ensemble_a_ajouter[ajouter_-1]->etat_dest, automate->ensemble_instruction[i]->etat_dest);
+                } else {
+                    char *nom=(char *) malloc(MAX_INT * sizeof(char));
+                    char *nom_src = (char *) malloc(MAX_INT * sizeof(char)), *nom_dest = (char *) malloc(MAX_INT * sizeof(char));
+                    strcpy(nom_src, automate->ensemble_instruction[i]->etat_src->nom);
+                    strcpy(nom_dest, automate->ensemble_instruction[i]->etat_dest->nom);
+                    concat_chaine(nom_src, nom_dest);
+                    strcpy(nom, nom_src);
+                    sprintf(nom, "%s_%d", nom, etat_++);            
+                    Etat* nouveau_etat=creer_etat(++ID_ETAT_SYS, nom, NORMAL);
+                    ajouter_etat(automate,nouveau_etat);
+
+                    nouvelle_inst = creer_instruction(++ID_INSTRUCTION_SYS, nouveau_mot, ensemble_a_ajouter[ajouter_-1]->etat_dest , nouveau_etat);
+                }
+                ensemble_a_ajouter[ajouter_++] = nouvelle_inst;
+            }
         }
     }
-    // élimination des transitions stantanées EPSILON
+
+    for (int p=0; p<elm_; p++) {
+        supprimer_instruction(automate, ensemble_a_eliminer[p]);
+    }
+
+    for (int m=0; m<ajouter_; m++) {
+        ajouter_instruction(automate, ensemble_a_ajouter[m]);
+    }
+
+    while (1) {
+        ajouter_ = 0;
+        elm_ = 0;
+
+        // élimination des transitions stantanées EPSILON
+
+        for (int w=0; w < automate->nombre_instructions; w++) {
+            if (!strcmp(automate->ensemble_instruction[w]->mot->vecteur_mot[0], EPSILON)) {
+                ensemble_a_eliminer[elm_++] = automate->ensemble_instruction[w];
+                if (automate->ensemble_instruction[w]->etat_dest->status == FINAL || automate->ensemble_instruction[w]->etat_dest->status == INITIAL_FINAL) {
+                //automate->ensemble_instruction[w]->etat_src->status = FINAL; 
+                    mise_a_jour_etat(automate, automate->ensemble_instruction[w]->etat_src,
+                        automate->ensemble_instruction[w]->etat_src->id,
+                        automate->ensemble_instruction[w]->etat_src->nom, 
+                        FINAL);
+                }
+                for (int y=0; y < automate->nombre_instructions; y++) {
+                    if (automate->ensemble_instruction[y]->etat_src == automate->ensemble_instruction[w]->etat_dest) {
+                        Instruction *i=automate->ensemble_instruction[y];
+                        Mot* mot=creer_mot(i->mot->longeur, i->mot->vecteur_mot);
+                        Instruction* inst=creer_instruction(++ID_INSTRUCTION_SYS, mot, automate->ensemble_instruction[w]->etat_src, i->etat_dest);       
+                        ensemble_a_ajouter[ajouter_++] = inst;
+                    }
+                }
+            }
+        }
+
+        for (int p=0; p<elm_; p++) {
+            supprimer_instruction(automate, ensemble_a_eliminer[p]);
+        }
+
+        for (int m=0; m<ajouter_; m++) {
+            ajouter_instruction(automate, ensemble_a_ajouter[m]);
+        }
+        if (!elm_) break;
+    }
+
+    return auto_est_simple(automate);
 }
 
 /****/

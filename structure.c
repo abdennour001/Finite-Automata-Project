@@ -23,6 +23,8 @@ char* status_to_string(Status status) {
         return "FINAL";
     } else if (status == INITIAL) {
         return "INIT";
+    } else if (status == INITIAL_FINAL) {
+        return "INIT_FINAL";
     } else {
         return "N";
     }
@@ -58,6 +60,37 @@ Etat* rechercher_etat_par_nom(Etat** ensemble_etats, char* nom) {
     for (int i=0; ensemble_etats[i] != NULL; i++) {
         if (strcmp(ensemble_etats[i]->nom, nom) == 0) {
             return ensemble_etats[i];
+        }
+    }
+}
+
+void mise_a_jour_etat(Automate *a, Etat* e, int id, char* nom, Status s) {
+    if (s == INITIAL) {
+        if (e->status == FINAL) {
+            e->status = INITIAL_FINAL;
+            // traitement de initialisation EPSILON
+        } else if (e->status == INITIAL) {
+            //
+        } else {
+            //   
+        }
+    } else if (s == FINAL) {
+        if (e->status == FINAL) {
+            // pass
+        } else if (e->status == INITIAL) {
+            e->status = INITIAL_FINAL;
+            ajouter_etat_final(a, e);
+        } else {
+            e->status = FINAL;
+            ajouter_etat_final(a, e);
+        }
+    } else {
+        if (e->status == FINAL) {
+
+        } else if (e->status == INITIAL) {
+
+        } else {
+            
         }
     }
 }
@@ -189,6 +222,7 @@ Instruction* rechercher_instruction(Automate* a, Etat* src, Etat* dest, Mot* mot
                 return a->ensemble_instruction[i];
             }
     }
+    return NULL;
 }
 
 /**/
@@ -232,12 +266,13 @@ void ajouter_etat(Automate* a, Etat* etat) {
         a->ensemble_etat[a->nombre_etat++] = etat;
         ajouter_etat_final(a, etat);
     } else if (etat->status == INITIAL) {
-        // ajouter un état initial
+        // ajouter un état initial *ici*
+        
     }
 }
 void supprimer_etat(Automate* a, Etat* etat) {
 
-    if (etat->status == INITIAL) {
+    if (etat->status == INITIAL || etat->status == INITIAL_FINAL) {
         puts("On ne peut pas supprimer un état initial.");
         abort();
     }
@@ -248,7 +283,7 @@ void supprimer_etat(Automate* a, Etat* etat) {
             for (int j=i; j < a->nombre_etat; j++) {
                 a->ensemble_etat[j] = a->ensemble_etat[j+1];
             }
-            if (etat->status == FINAL) { // si l'état est final alors on supprime l'état.
+            if (etat->status == FINAL || etat->status == INITIAL_FINAL) { // si l'état est final alors on supprime l'état.
                 for (int k=0; k < a->nombre_etats_finaux; k++) {
                     if (!strcmp(a->ensemble_etat_finaux[k]->nom, etat->nom)) {
                         a->nombre_etats_finaux--;

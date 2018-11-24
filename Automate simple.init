@@ -1,37 +1,23 @@
 DEBUT;
 A_simple < X, S0, F, S, II >
-A 5
+A 3
 5
-25
-a b c d e
+11
+a b c
 S0 INIT
 S1
-S2
 S3 FINAL
-S4 FINAL
-S0, b,S1
-S0, c,S3
-S0, d,S0
-S0, e,S4
-S0,a,S0
-S1, a,S0
-S1, b,S1
-S1, c,S1
-S1, d,S4
-S1, e,S0
-S2, a,S1
-S2, b,S1
-S2, c,S1
-S2, d,S1
-S2, e,S1
-S3, a,S4
-S3, b,S4
-S3, c,S4
-S3, d,S4
-S3, e,S4
-S4, a,S2
-S4, b,S2
-S4, c,S2
-S4, d,S2
-S4, e,S2
+S4
+S5 FINAL
+S0, a,S1
+S0,,S1
+S0, a,S4
+S1,,S3
+S1, a,S3
+S1, b, S4
+S4, c,S5
+S4,,S5
+S3,,S5
+S5,b,S3
+S5,c,S0
 FIN;

@@ -28,6 +28,7 @@ FILE* ouvrir_fichier();
 
 int converter_chaine_entier(char* chaine);
 char** separer_chaine(char* chaine, char* separateur, int *longeur);
+void concat_chaine(char *a, char *b); // concatener a et b, le resultat dans a
 Automate* lire_fichier_init(char* nom_fichier_init);
 
 /****/
@@ -49,7 +50,7 @@ int auto_est_deterministe(Automate* automate);
 int auto_est_complet(Automate* automate);
 int etat_est_accessible(Automate* a, Etat* etat);
 int etat_est_Co_accessible(Automate* a, Etat* etat);
-Automate* rendez_simple(Automate* automate);
+int rendez_simple(Automate* automate);
 Automate* rendez_deterministe(Automate* automate);
 Automate* rendez_complet(Automate* automate);
 

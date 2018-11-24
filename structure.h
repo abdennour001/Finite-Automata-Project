@@ -23,9 +23,10 @@ extern int ID_ETAT_SYS;
 extern int ID_INSTRUCTION_SYS;
 
 enum Status { // les 3 status d'un état d'une automate.
-    NORMAL = 0,
-    FINAL = 1, 
-    INITIAL = -1
+    NORMAL = 1, // flag NORMAL 0001
+    FINAL = 2, // flag FINAL 0010
+    INITIAL = 4, // flag INITIAL 0100
+    INITIAL_FINAL = 6 // flag INITIAL_FINAL 0110
 };
 
 typedef enum Status Status;
@@ -141,6 +142,7 @@ void afficher_automate(Automate *a);
 void set_ensemble_etat(Automate* a, Etat** e_e);
 void ajouter_etat(Automate* a, Etat* etat);
 void supprimer_etat(Automate* a, Etat* etat);
+void mise_a_jour_etat(Automate *a, Etat *e, int id, char* nom, Status s);
 
 //---------
 

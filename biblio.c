@@ -338,7 +338,9 @@ int auto_est_complet(Automate* automate) {
 Automate* rendez_simple(Automate* automate) {
     // élimination des transitions par mots
     for (int i=0; i<automate->nombre_instructions; i++) {
-        if (automate->ensemble_instruction[i]->mot->longeur > 1)
+        if (automate->ensemble_instruction[i]->mot->longeur > 1) {
+            
+        }
     }
     // élimination des transitions stantanées EPSILON
 }

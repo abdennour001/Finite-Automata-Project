@@ -9,7 +9,7 @@ A finite automaton (FA) is a simple idealized machine used to recognize patterns
 ***!!!*** *@X@* == X est sans espaces ***!!!*** <br/>
 ***!!!*** *@X@* *@Y@* ... @Z@ == X, Y et Z sont séparés par un espace ***!!!** <br/>
 ***!!!*** *@status@* == status dans {INIT, FINAL} ***!!!*** <br/>
-***!!!*** *@mot_lu@* == vide si est une transision stantané EPSILON ***!!!*** <br/>
+***!!!*** *@mot_lu@* == vide si est une transition stantané EPSILON ***!!!*** <br/>
 ***!!!*** *@mot_lu@* == *@lettre_1@* *@lettre_2@* ... *@lettre_3@* == des lettres séparés par espaces ***!!!*** <br/>
 
 **DEBUT;** <br/>

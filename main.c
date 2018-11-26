@@ -5,6 +5,8 @@
 #include "biblio.h"
 #include "interface.h"
 #include "tests/test_unit.h"
+#include "externe/structure.h"
+
 /**
  * @author AMOKRANE Abdennour
  * 

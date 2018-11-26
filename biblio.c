@@ -13,6 +13,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "externe/structure.h"
+
 
 char fichier_init[30];
 
@@ -116,10 +118,10 @@ Automate* lire_fichier_init(char* nom_fichier_init) {
     Instruction** ensemble_instruction; // ensemble des instructions
     Etat* etat_init;
 
-    ensemble_etats_init = (Etat** ) malloc(nombre_etats * sizeof(Etat)); // Allouer nombre_etats au max pour les etats initiaux
-    ensemble_instruction = malloc(nombre_instructions * sizeof(Instruction)); // Allouer nombre_instruction Instruction dans la memoire
-    ensemble_etats = malloc(nombre_etats * sizeof(Etat)); // Allouer nombre_etat Etat dans la memoire
-    ensemble_etats_finaux = malloc(sizeof(Etat));
+    ensemble_etats_init = (Etat** ) malloc(MAX_INT * sizeof(Etat)); // Allouer nombre_etats au max pour les etats initiaux
+    ensemble_instruction = malloc(MAX_INT * sizeof(Instruction)); // Allouer nombre_instruction Instruction dans la memoire
+    ensemble_etats = malloc(MAX_INT * sizeof(Etat)); // Allouer nombre_etat Etat dans la memoire
+    ensemble_etats_finaux = malloc(MAX_INT * sizeof(Etat));
 
     char** aig_etat; char** aig_mot;
 
@@ -303,8 +305,8 @@ int auto_est_deterministe(Automate* automate) {
 
     for (int i=0; i<automate->nombre_etat; i++) {
         // initialisé le vecteur des compteurs à 0 pour chaque état.
-        for (int i=0; i<automate->alphabet->nombre_lettres; i++) {
-            cpt_vec[i] = 0;
+        for (int b=0; b<automate->alphabet->nombre_lettres; b++) {
+            cpt_vec[b] = 0;
         }
         for (int j=0; j<automate->nombre_instructions; j++) {
             if (!strcmp(automate->ensemble_instruction[j]->etat_src->nom, automate->ensemble_etat[i]->nom)) {
@@ -328,28 +330,25 @@ int auto_est_complet(Automate* automate) {
 
     for (int i=0; i<automate->nombre_etat; i++) {
         // initialisé le vecteur des compteurs à 0 pour chaque état.
-        for (int i=0; i<automate->alphabet->nombre_lettres; i++) {
-            cpt_vec[i] = 0;
+        for (int b=0; b<automate->alphabet->nombre_lettres; b++) {
+            cpt_vec[b] = 0;
         }
         for (int j=0; j<automate->nombre_instructions; j++) {
             if (!strcmp(automate->ensemble_instruction[j]->etat_src->nom, automate->ensemble_etat[i]->nom)) {
                 for (int k=0; k<automate->alphabet->nombre_lettres; k++) {
                     if (!strcmp(automate->ensemble_instruction[j]->mot->vecteur_mot[0], automate->alphabet->ensemble_lettres[k])) {
-                        if (++cpt_vec[k] > 1) goto non_det;
-                        break;
+                        cpt_vec[k]++;
                     }
                 }
             }
         }
         for (int l=0; l<automate->alphabet->nombre_lettres; l++) {
-            if (cpt_vec[l] != 1) {
+            if (cpt_vec[l] < 1) {
                 return 0;
             }
         }
     }
     return 1;
-    non_det:
-    return 0;
 }
 
 int rendez_simple(Automate* automate) {
@@ -451,6 +450,92 @@ int rendez_simple(Automate* automate) {
     }
 
     return auto_est_simple(automate);
+}
+
+void rendez_complet(Automate* automate) {
+
+    int cpt_vec[automate->alphabet->nombre_lettres];
+    Instruction **ensemble_instr_a_ajouter=(Instruction **) malloc(MAX_INT * sizeof(Instruction));
+    Etat *etat_puis=creer_etat(++ID_ETAT_SYS, "E_puit", NORMAL);
+    int aig=1, ajouter_=0;
+
+    for (int i=0; i<automate->nombre_etat; i++) {
+        // initialisé le vecteur des compteurs à 0 pour chaque état.
+        for (int i=0; i<automate->alphabet->nombre_lettres; i++) {
+            cpt_vec[i] = 0;
+        }
+        for (int j=0; j<automate->nombre_instructions; j++) {
+            if (!strcmp(automate->ensemble_instruction[j]->etat_src->nom, automate->ensemble_etat[i]->nom)) {
+                for (int k=0; k<automate->alphabet->nombre_lettres; k++) {
+                    if (!strcmp(automate->ensemble_instruction[j]->mot->vecteur_mot[0], automate->alphabet->ensemble_lettres[k])) {
+                        cpt_vec[k]++;
+                    }
+                }
+            }
+        }
+        for (int l=0; l<automate->alphabet->nombre_lettres; l++) {
+            if (cpt_vec[l] < 1) {
+                if (aig) { // ajouter les instructions manquante
+                    aig = 0;
+                    // ajouter l'etat a l'ensemble des etat
+                    ajouter_etat(automate, etat_puis);
+                }
+                char **mot_vect=(char **) malloc(sizeof(char*));
+                mot_vect[0] = (char *)malloc(MAX_INT * sizeof(char));
+                strcpy(mot_vect[0], automate->alphabet->ensemble_lettres[l]);
+                Mot *lettre=creer_mot(1, mot_vect);
+                Instruction *instr=creer_instruction(++ID_INSTRUCTION_SYS, lettre, automate->ensemble_etat[i], etat_puis);
+                ensemble_instr_a_ajouter[ajouter_++] = instr;
+            }
+        }
+    }
+
+    for (int i=0; i<ajouter_; i++) {
+        ajouter_instruction(automate, ensemble_instr_a_ajouter[i]);
+    }
+}
+
+Automate *rendez_deterministe(Automate* automate) {
+    Pile *pile_sys=NULL; Etat* etat_aig;
+    char file_immitation[MAX_INT];
+    Etat *ensemble_nouveau_etat[MAX_INT]; int nouveau_etat_;
+
+    sprintf(file_immitation, "DEBUT;\n");
+    sprintf(file_immitation, "%s%s _deterministe_version < X, S0, F, S, II >\n", file_immitation, automate->nom);
+    sprintf(file_immitation, "%s%s %d\n", file_immitation, automate->alphabet->nom, automate->alphabet->nombre_lettres);
+    
+    char etat_chaine[MAX_INT]; int nombre_etat=0;
+    char instruction_chaine[MAX_INT]; int nombre_instruction=0;
+
+    empiler(&pile_sys, automate->ensemble_etat[0]);
+
+    while ((etat_aig = depiler(&pile_sys)) != NULL) {
+        for (int i=0; i < automate->alphabet->nombre_lettres; i++) {
+            Etat* ensemble_interne_etat[MAX_INT]; int j=-1;
+            for (int l=0; l<automate->nombre_instructions; l++) {
+                if (!strcmp(automate->ensemble_instruction[l]->etat_src->nom, etat_aig->nom)) {
+                    ensemble_interne_etat[++j] = automate->ensemble_instruction[l]->etat_dest; 
+                }
+            }
+            if (j != -1) {
+                char nom_etat[MAX_INT];
+                sprintf(nom_etat, "%s", ensemble_interne_etat[0]->nom);
+                for (int o=1; o < j; o++) {
+                    sprintf(nom_etat, "%s %s", nom_etat, ensemble_interne_etat[o]->nom);
+                }
+                Etat *nouveau_etat=creer_etat();
+            }
+        }
+        afficher_etat(etat_aig);
+    }
+
+    // copying the alphabet
+    sprintf(file_immitation, "%s%s", file_immitation, automate->alphabet->ensemble_lettres[0]);    
+    for (int i=1; i<automate->alphabet->nombre_lettres; i++) {
+        sprintf(file_immitation, "%s %s", file_immitation, automate->alphabet->ensemble_lettres[i]);
+    }
+    sprintf(file_immitation, "%s\n", file_immitation);
+
 }
 
 /****/

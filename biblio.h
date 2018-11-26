@@ -18,6 +18,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "structure.h"
+#include "externe/structure.h"
+
 
 /** Declaration fichier .init **/
 extern char fichier_init[30];
@@ -51,8 +53,8 @@ int auto_est_complet(Automate* automate);
 int etat_est_accessible(Automate* a, Etat* etat);
 int etat_est_Co_accessible(Automate* a, Etat* etat);
 int rendez_simple(Automate* automate);
-Automate* rendez_deterministe(Automate* automate);
-Automate* rendez_complet(Automate* automate);
+Automate *rendez_deterministe(Automate* automate);
+void rendez_complet(Automate* automate);
 
 /****/
 

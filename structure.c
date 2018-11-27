@@ -62,6 +62,7 @@ Etat* rechercher_etat_par_nom(Etat** ensemble_etats, char* nom) {
             return ensemble_etats[i];
         }
     }
+    return NULL;
 }
 
 void mise_a_jour_etat(Automate *a, Etat* e, int id, char* nom, Status s) {

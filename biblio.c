@@ -35,6 +35,21 @@ int converter_chaine_entier(char* chaine) {
     n = strtol(chaine, &ptr, 10);
     return n;
 }
+
+int deux_chaines_egale(char **ch1, char **cha2, int l1, int l2) {
+    int vct1[MAX_INT];
+    for (int i=0; i<l1; i++) {
+        for (int j=0; j<l2; j++) {
+            if (!strcmp(ch1[i], cha2[j])) {
+                vct1[i] = 1;
+                break;
+            }
+        }
+        if (!vct1[i]) return 0;
+    }
+    return 1 && (l1 == l2);
+}
+
 char** separer_chaine(char* chaine, char* separateur, int *longeur) {
     char** splits;
     char* token;
@@ -496,45 +511,91 @@ void rendez_complet(Automate* automate) {
 }
 
 Automate *rendez_deterministe(Automate* automate) {
-    Pile *pile_sys=NULL; Etat* etat_aig;
-    char file_immitation[MAX_INT];
-    Etat *ensemble_nouveau_etat[MAX_INT]; int nouveau_etat_;
 
-    sprintf(file_immitation, "DEBUT;\n");
-    sprintf(file_immitation, "%s%s _deterministe_version < X, S0, F, S, II >\n", file_immitation, automate->nom);
-    sprintf(file_immitation, "%s%s %d\n", file_immitation, automate->alphabet->nom, automate->alphabet->nombre_lettres);
-    
-    char etat_chaine[MAX_INT]; int nombre_etat=0;
-    char instruction_chaine[MAX_INT]; int nombre_instruction=0;
+    Pile *pile_sys=NULL; Etat* etat_aig;
+    Etat* nouveau_etat_init;
+    Etat *ensemble_nouveau_etat[MAX_INT]; int nombre_etats=0;
+    Instruction *ensemble_nouveau_instruction[MAX_INT]; int nombre_instructions=0;
+    Etat *ensemble_nouveau_etat_finaux[MAX_INT]; int nombre_etats_finaux=0;
+    Alphabet *nouvelle_alphabet;
+    char nom_etat[MAX_INT];
+    Etat *etat_dest;
 
     empiler(&pile_sys, automate->ensemble_etat[0]);
 
     while ((etat_aig = depiler(&pile_sys)) != NULL) {
         for (int i=0; i < automate->alphabet->nombre_lettres; i++) {
-            Etat* ensemble_interne_etat[MAX_INT]; int j=-1;
+            Etat* ensemble_interne_etat[MAX_INT]; int j=-1; Status s=NORMAL;
             for (int l=0; l<automate->nombre_instructions; l++) {
-                if (!strcmp(automate->ensemble_instruction[l]->etat_src->nom, etat_aig->nom)) {
-                    ensemble_interne_etat[++j] = automate->ensemble_instruction[l]->etat_dest; 
+                // a commenter ida thardet XD
+                char **les_etats_prec;
+                char nom[MAX_INT];
+                strcpy(nom, etat_aig->nom); int long_;
+                les_etats_prec = separer_chaine(nom, " \n", &long_);
+                for (int k=0; k<long_; k++) {
+                    printf("%s - %d _ ", les_etats_prec[k], long_);
+                    Etat *e=rechercher_etat_par_nom(automate->ensemble_etat, les_etats_prec[k]);
+                    //afficher_etat(e);puts("\n");
+                    if (!strcmp(automate->ensemble_instruction[l]->etat_src->nom, e->nom) && !strcmp(automate->ensemble_instruction[l]->mot->vecteur_mot[0], automate->alphabet->ensemble_lettres[i])) {
+                        ensemble_interne_etat[++j] = automate->ensemble_instruction[l]->etat_dest;
+                        //afficher_etat(ensemble_interne_etat[j]);
+
+                        if (automate->ensemble_instruction[l]->etat_dest->status == FINAL) {
+                            s = FINAL;
+                        }
+                    }
                 }
+                //
             }
             if (j != -1) {
-                char nom_etat[MAX_INT];
+                int exist=0;
                 sprintf(nom_etat, "%s", ensemble_interne_etat[0]->nom);
-                for (int o=1; o < j; o++) {
+                for (int o=1; o <= j; o++) {
                     sprintf(nom_etat, "%s %s", nom_etat, ensemble_interne_etat[o]->nom);
                 }
-                Etat *nouveau_etat=creer_etat();
+                
+                for (int t=0; t<nombre_etats; t++) {
+                    // ensemble ch1
+                    char **cha1; int l1;
+                    char sauv_nom_etat[MAX_INT];
+                    strcpy(sauv_nom_etat, nom_etat);
+                    cha1 = separer_chaine(sauv_nom_etat, " \n", &l1);
+                    // ensemble ch2
+                    char **cha2; int l2;
+                    char nom_etat_2[MAX_INT];
+                    strcpy(nom_etat_2, ensemble_nouveau_etat[t]);
+                    cha2 = separer_chaine(nom_etat, " \n", &l2);
+
+                    if (deux_chaines_egale(cha1, cha2, l1, l2)) {
+                        exist = 1;
+                        etat_dest = ensemble_nouveau_etat[t];
+                        break;
+                    }
+                }
+                if (!exist) {
+                    Etat *nouveau_etat=creer_etat(++ID_ETAT_SYS, nom_etat, s);
+                    strcpy(nom_etat, "");
+                    ensemble_nouveau_etat[nombre_etats++] = nouveau_etat;
+                    if (s == FINAL) {
+                        ensemble_nouveau_etat_finaux[nombre_etats_finaux++] = nouveau_etat;
+                    }
+                    empiler(&pile_sys, nouveau_etat);           
+                    etat_dest = nouveau_etat;
+                }
+                char *nouveau_vect_mot[MAX_INT];
+                nouveau_vect_mot[0] = (char *) malloc(MAX_INT * sizeof(char));
+                strcpy(nouveau_vect_mot[0], automate->alphabet->ensemble_lettres[i]);
+                Mot *nouvelle_mot=creer_mot(1, nouveau_vect_mot);
+                Instruction *inst=creer_instruction(++ID_INSTRUCTION_SYS, nouvelle_mot, etat_aig, etat_dest);
+                // banch-mark test
+                afficher_instruction(inst);puts("\n");//int m;scanf("%d", &m);
+                ensemble_nouveau_instruction[nombre_instructions++] = inst; 
+                puts("FIN!");
             }
         }
-        afficher_etat(etat_aig);
+        // banch-mark test
+        //afficher_etat(etat_aig);puts("\n");
     }
-
-    // copying the alphabet
-    sprintf(file_immitation, "%s%s", file_immitation, automate->alphabet->ensemble_lettres[0]);    
-    for (int i=1; i<automate->alphabet->nombre_lettres; i++) {
-        sprintf(file_immitation, "%s %s", file_immitation, automate->alphabet->ensemble_lettres[i]);
-    }
-    sprintf(file_immitation, "%s\n", file_immitation);
 
 }
 

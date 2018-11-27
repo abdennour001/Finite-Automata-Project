@@ -29,6 +29,7 @@ FILE* ouvrir_fichier();
 /** Manupilation chaine de caractère pour lire le fichier .init **/
 
 int converter_chaine_entier(char* chaine);
+int deux_chaines_egale(char **ch1, char **cha2, int l1, int l2);
 char** separer_chaine(char* chaine, char* separateur, int *longeur);
 void concat_chaine(char *a, char *b); // concatener a et b, le resultat dans a
 Automate* lire_fichier_init(char* nom_fichier_init);

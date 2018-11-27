@@ -16,7 +16,7 @@
 #include "../externe/structure.h"
 
 void test_unitaire() {
-    Automate* automate = nouvelle_automate("./Automate simple.init");
+    Automate* automate = nouvelle_automate("./Automate deterministe.init");
     Etat* e=creer_etat(++ID_ETAT_SYS, "new_etat1", FINAL);
     Etat* e1=creer_etat(++ID_ETAT_SYS, "new_etat2", NORMAL);
     Etat* e2=creer_etat(++ID_ETAT_SYS, "new_etat3", FINAL);
@@ -46,5 +46,9 @@ void test_unitaire() {
 
     //afficher_automate(automate);
     //Automate* automate2 = nouvelle_automate("./Automate2.init");
-    //afficher_automate(automate2);   
+    //afficher_automate(automate2);
+    /*char *l1[]={"S0", "S1", "S2"};
+    char *l2[]={"S1", "S0", "S2", "S4", "S6"};
+    printf("%d\n", deux_chaines_egale(l1, l2, 3, 5));*/
+
 }

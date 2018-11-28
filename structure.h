@@ -50,7 +50,7 @@ void set_id_etat(Etat* e, int id);
 void set_status(Etat* e, Status s);
 
 // Recherche.
-Etat* rechercher_etat_par_nom(Etat** ensemble_etats, char* nom);
+Etat* rechercher_etat_par_nom(Etat** ensemble_etats, int nombre_etats, char* nom);
 
 // Affichge.
 void afficher_etat(Etat* etat);

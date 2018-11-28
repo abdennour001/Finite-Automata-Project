@@ -1,0 +1,16 @@
+DEBUT;
+A_determinist < X, S0, F, S, II >
+A 2
+4
+5
+a b
+S1
+S2 FINAL
+S0 INIT
+S3 FINAL
+S0, a,S1
+S0, a,S2
+S0, b, S2
+S1, b, S1
+S1, b,S3
+FIN;

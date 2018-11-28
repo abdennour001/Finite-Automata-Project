@@ -37,9 +37,10 @@ void test_unitaire() {
     e9 = depiler(&p);
     printf("%d\n", e9 == NULL);*/
 
-    afficher_automate(automate);
-    //Automate *automate_deter = rendez_deterministe(automate);
+    //rendez_simple(automate);
     //afficher_automate(automate);
+    Automate *automate_deter = rendez_deterministe(automate);
+    afficher_automate(automate_deter);
 
     //printf("%d - %d * %d\n", auto_est_complet(automate), auto_est_simple(automate), auto_est_deterministe(automate));
     //rendez_complet(automate);
@@ -48,8 +49,14 @@ void test_unitaire() {
     //afficher_automate(automate);
     //Automate* automate2 = nouvelle_automate("./Automate2.init");
     //afficher_automate(automate2);
-    /*char *l1[]={"S3 ", "S1"};
-    char *l2[]={"S1", "S2 "};
-    printf("%d\n", deux_chaines_egale(l1, l2, 2, 2));*/
+    /*char **l1, **l2; int l11, l12;
+    char nom1[MAX_INT], nom2[MAX_INT];
+    strcpy(nom1, "S0;S2");
+    strcpy(nom2, "S0;S1");
+    l1 = separer_chaine(nom1, " ;\n", &l11);
+    l2 = separer_chaine(nom2, " ;\n", &l12);
+    //char *l1[]={"S0", "S2"};
+    //char *l2[]={"S0", "S1"};
+    printf("%d\n", deux_chaines_egale(l1, l2, l11, l12));*/
 
 }

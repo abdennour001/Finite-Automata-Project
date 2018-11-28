@@ -56,8 +56,8 @@ void afficher_etat_sans_detail(Etat* etat) {
 }
 
 
-Etat* rechercher_etat_par_nom(Etat** ensemble_etats, char* nom) {
-    for (int i=0; ensemble_etats[i] != NULL; i++) {
+Etat* rechercher_etat_par_nom(Etat** ensemble_etats, int nombre_etats,char* nom) {
+    for (int i=0; i<nombre_etats; i++) {
         if (strcmp(ensemble_etats[i]->nom, nom) == 0) {
             return ensemble_etats[i];
         }

@@ -52,7 +52,7 @@ void afficher_etat(Etat* etat) {
 }
 
 void afficher_etat_sans_detail(Etat* etat) {
-    printf("| %4s |", etat->nom);
+    printf("| %8s |", etat->nom);
 }
 
 

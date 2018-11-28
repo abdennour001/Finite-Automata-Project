@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "externe/structure.h"
 
 
@@ -37,6 +38,9 @@ int converter_chaine_entier(char* chaine) {
 }
 
 int deux_chaines_egale(char **ch1, char **cha2, int l1, int l2) {
+    
+    if (l1 != l2) return 0;
+    
     int vct1[MAX_INT];
     for (int i=0; i<l1; i++) {
         for (int j=0; j<l2; j++) {
@@ -47,7 +51,7 @@ int deux_chaines_egale(char **ch1, char **cha2, int l1, int l2) {
         }
         if (!vct1[i]) return 0;
     }
-    return 1 && (l1 == l2);
+    return 1;
 }
 
 char** separer_chaine(char* chaine, char* separateur, int *longeur) {
@@ -518,6 +522,7 @@ Automate *rendez_deterministe(Automate* automate) {
     Instruction *ensemble_nouveau_instruction[MAX_INT]; int nombre_instructions=0;
     Etat *ensemble_nouveau_etat_finaux[MAX_INT]; int nombre_etats_finaux=0;
     Alphabet *nouvelle_alphabet;
+    Automate *nouvelle_auto;
     char nom_etat[MAX_INT];
     Etat *etat_dest;
 
@@ -531,14 +536,14 @@ Automate *rendez_deterministe(Automate* automate) {
                 char **les_etats_prec;
                 char nom[MAX_INT];
                 strcpy(nom, etat_aig->nom); int long_;
-                les_etats_prec = separer_chaine(nom, " \n", &long_);
+                les_etats_prec = separer_chaine(nom, " ;\n", &long_);
                 for (int k=0; k<long_; k++) {
-                    printf("%s - %d _ ", les_etats_prec[k], long_);
+                    //printf("%s - %d _ ", les_etats_prec[k], long_);
                     Etat *e=rechercher_etat_par_nom(automate->ensemble_etat, les_etats_prec[k]);
                     //afficher_etat(e);puts("\n");
                     if (!strcmp(automate->ensemble_instruction[l]->etat_src->nom, e->nom) && !strcmp(automate->ensemble_instruction[l]->mot->vecteur_mot[0], automate->alphabet->ensemble_lettres[i])) {
                         ensemble_interne_etat[++j] = automate->ensemble_instruction[l]->etat_dest;
-                        //afficher_etat(ensemble_interne_etat[j]);
+                  //      afficher_etat(ensemble_interne_etat[j]);
 
                         if (automate->ensemble_instruction[l]->etat_dest->status == FINAL) {
                             s = FINAL;
@@ -551,20 +556,34 @@ Automate *rendez_deterministe(Automate* automate) {
                 int exist=0;
                 sprintf(nom_etat, "%s", ensemble_interne_etat[0]->nom);
                 for (int o=1; o <= j; o++) {
-                    sprintf(nom_etat, "%s %s", nom_etat, ensemble_interne_etat[o]->nom);
+                    sprintf(nom_etat, "%s;%s", nom_etat, ensemble_interne_etat[o]->nom);
                 }
+
+                //printf("*%s*", nom_etat);
                 
                 for (int t=0; t<nombre_etats; t++) {
                     // ensemble ch1
                     char **cha1; int l1;
                     char sauv_nom_etat[MAX_INT];
                     strcpy(sauv_nom_etat, nom_etat);
-                    cha1 = separer_chaine(sauv_nom_etat, " \n", &l1);
+                    cha1 = separer_chaine(sauv_nom_etat, " ;\n", &l1);
                     // ensemble ch2
                     char **cha2; int l2;
                     char nom_etat_2[MAX_INT];
-                    strcpy(nom_etat_2, ensemble_nouveau_etat[t]);
-                    cha2 = separer_chaine(nom_etat, " \n", &l2);
+                    strcpy(nom_etat_2, ensemble_nouveau_etat[t]->nom);
+                    cha2 = separer_chaine(nom_etat_2, " ;\n", &l2);
+
+                    /*printf("cha1 %d:", t);
+                    for (int b0=0; b0<l1; b0++) {
+                        printf("+%s+", cha1[b0]);
+                    }
+
+                    printf("cha2 %d:", t);
+                    for (int b0=0; b0<l2; b0++) {
+                        printf("+%s+", cha2[b0]);
+                    }
+
+                    printf("/%d/", deux_chaines_egale(cha1, cha2, l1, l2));*/
 
                     if (deux_chaines_egale(cha1, cha2, l1, l2)) {
                         exist = 1;
@@ -572,6 +591,7 @@ Automate *rendez_deterministe(Automate* automate) {
                         break;
                     }
                 }
+
                 if (!exist) {
                     Etat *nouveau_etat=creer_etat(++ID_ETAT_SYS, nom_etat, s);
                     strcpy(nom_etat, "");
@@ -586,16 +606,25 @@ Automate *rendez_deterministe(Automate* automate) {
                 nouveau_vect_mot[0] = (char *) malloc(MAX_INT * sizeof(char));
                 strcpy(nouveau_vect_mot[0], automate->alphabet->ensemble_lettres[i]);
                 Mot *nouvelle_mot=creer_mot(1, nouveau_vect_mot);
+                //afficher_etat(etat_dest);
                 Instruction *inst=creer_instruction(++ID_INSTRUCTION_SYS, nouvelle_mot, etat_aig, etat_dest);
                 // banch-mark test
-                afficher_instruction(inst);puts("\n");//int m;scanf("%d", &m);
-                ensemble_nouveau_instruction[nombre_instructions++] = inst; 
-                puts("FIN!");
+                //afficher_instruction(inst);puts("\n");//int m;scanf("%d", &m);
+                ensemble_nouveau_instruction[nombre_instructions++] = inst;
+                //puts("");
             }
         }
         // banch-mark test
         //afficher_etat(etat_aig);puts("\n");
     }
+
+    nouvelle_alphabet = automate->alphabet;
+    char nom_automate[MAX_INT];
+    sprintf(nom_automate, "%s_Version_deterministe", automate->nom);
+    nouveau_etat_init = automate->etat_init;
+    ensemble_nouveau_etat[nombre_etats++] = nouveau_etat_init;
+    nouvelle_auto = creer_automate(nombre_etats, nombre_etats_finaux, nombre_instructions, nom_automate, nouvelle_alphabet, nouveau_etat_init, ensemble_nouveau_etat, ensemble_nouveau_etat_finaux, ensemble_nouveau_instruction);
+    return nouvelle_auto;
 
 }
 

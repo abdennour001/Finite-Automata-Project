@@ -11,7 +11,7 @@ A finite automaton (FA) is a simple idealized machine used to recognize patterns
 ***!!!*** *@status@* == status dans {INIT, FINAL, INIT&FINAL} ***!!!*** <br/>
 ***!!!*** *@mot_lu@* == vide si est une transition stantané EPSILON ***!!!*** <br/>
 ***!!!*** *@mot_lu@* == *@lettre_1@* *@lettre_2@* ... *@lettre_3@* == des lettres séparés par espaces ***!!!*** <br/>
-
+'''
 **DEBUT;** <br/>
 *@nom_automate@* **< X, S0, F, S, II >** <br/>
 *@nom_alphabet@* *@nombre_des_lettres_dans_l'alphabet@* <br/>
@@ -32,3 +32,4 @@ A finite automaton (FA) is a simple idealized machine used to recognize patterns
 .<br/>
 *@etat_src_k@***,** *@mot_lu_k@***,** *@etat_dest_k@*<br/>  
 **FIN;**
+'''

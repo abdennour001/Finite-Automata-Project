@@ -27,9 +27,9 @@ A finite automaton (FA) is a simple idealized machine used to recognize patterns
 *@etat_src_1@***,** *@mot_lu_1@***,** *@etat_dest_1@*<br/>
 *@etat_src_2@***,** *@mot_lu_2@***,** *@etat_dest_2@*<br/>
 *@etat_src_3@***,** *@mot_lu_3@***,** *@etat_dest_3@*<br/>
-.<br/>
-.<br/>
-.<br/>
-*@etat_src_k@***,** *@mot_lu_k@***,** *@etat_dest_k@*<br/>  
-**FIN;**
+.
+.
+.
+@etat_src_k@, @mot_lu_k@, @etat_dest_k@  
+FIN;
 ```

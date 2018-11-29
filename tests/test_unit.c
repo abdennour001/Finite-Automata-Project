@@ -16,7 +16,7 @@
 #include "../externe/structure.h"
 
 void test_unitaire() {
-    Automate* automate = nouvelle_automate("./tests/Automate deterministe.init");
+    Automate* automate = nouvelle_automate("./tests/Automate simple.init");
     Etat* e=creer_etat(++ID_ETAT_SYS, "new_etat1", FINAL);
     Etat* e1=creer_etat(++ID_ETAT_SYS, "new_etat2", NORMAL);
     Etat* e2=creer_etat(++ID_ETAT_SYS, "new_etat3", FINAL);
@@ -37,13 +37,13 @@ void test_unitaire() {
     e9 = depiler(&p);
     printf("%d\n", e9 == NULL);*/
 
-    //rendez_simple(automate);
-    //afficher_automate(automate);
+    rendez_simple(automate);
+    afficher_automate(automate);
     //Automate *automate_deter = rendez_deterministe(automate);
     //afficher_automate(automate_deter);
 
     //depth_first_search(automate, automate->ensemble_etat[automate->nombre_etat-1]);
-    printf("%d\n", etat_est_Co_accessible(automate, automate->ensemble_etat[automate->nombre_etat-1]));
+    //printf("%d\n", etat_est_Co_accessible(automate, automate->ensemble_etat[automate->nombre_etat-2]));
 
     //printf("%d - %d * %d\n", auto_est_complet(automate), auto_est_simple(automate), auto_est_deterministe(automate));
     //rendez_complet(automate);

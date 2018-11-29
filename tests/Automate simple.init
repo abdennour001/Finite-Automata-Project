@@ -1,19 +1,15 @@
 DEBUT;
 A_complet < X, S0, F, S, II >
-ABDENNOUR 10
-5
-7
-a b c d e f g h i j
+ABDENNOUR 2
+4
+4
+a b
 S0 INIT
-S1
-S2 FINAL
-S3
-S4
-S0, a, S1
-S0, b, S1
-S1, a,S1
-S1, c,S0
-S2, c,S1
-S3, a,S4
-S4, a,S3
+S1 INIT
+S2
+S3 FINAL
+S0,, S1
+S1, a, S3
+S1, b,S2
+S1,, S3
 FIN;

@@ -447,10 +447,36 @@ int rendez_simple(Automate* automate) {
                 ensemble_a_eliminer[elm_++] = automate->ensemble_instruction[w];
                 if (automate->ensemble_instruction[w]->etat_dest->status == FINAL || automate->ensemble_instruction[w]->etat_dest->status == INITIAL_FINAL) {
                 //automate->ensemble_instruction[w]->etat_src->status = FINAL; 
-                    mise_a_jour_etat(automate, automate->ensemble_instruction[w]->etat_src,
+                    /*mise_a_jour_etat(automate, automate->ensemble_instruction[w]->etat_src,
                         automate->ensemble_instruction[w]->etat_src->id,
                         automate->ensemble_instruction[w]->etat_src->nom, 
-                        FINAL);
+                        FINAL);*/
+                    // a nouveau
+                    switch (automate->ensemble_instruction[w]->etat_src->status) {
+                        case INITIAL:
+                            mise_a_jour_etat(automate, automate->ensemble_instruction[w]->etat_src,
+                            automate->ensemble_instruction[w]->etat_src->id,
+                            automate->ensemble_instruction[w]->etat_src->nom, 
+                            INITIAL_FINAL);
+                            break;
+                        case NORMAL:
+                            mise_a_jour_etat(automate, automate->ensemble_instruction[w]->etat_src,
+                            automate->ensemble_instruction[w]->etat_src->id,
+                            automate->ensemble_instruction[w]->etat_src->nom, 
+                            FINAL);
+                            break;
+                        case FINAL:
+                            // pass
+                            break;
+                        case INITIAL_FINAL:
+                            // pass
+                            /*mise_a_jour_etat(automate, automate->ensemble_instruction[w]->etat_src,
+                            automate->ensemble_instruction[w]->etat_src->id,
+                            automate->ensemble_instruction[w]->etat_src->nom, 
+                            INITIAL_FINAL);*/
+                            break;
+                    } 
+
                 }
                 for (int y=0; y < automate->nombre_instructions; y++) {
                     if (automate->ensemble_instruction[y]->etat_src == automate->ensemble_instruction[w]->etat_dest) {

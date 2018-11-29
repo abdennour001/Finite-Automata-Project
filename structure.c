@@ -52,7 +52,11 @@ void afficher_etat(Etat* etat) {
 }
 
 void afficher_etat_sans_detail(Etat* etat) {
-    printf("| %8s |", etat->nom);
+    if (etat->status == FINAL || etat->status == INITIAL_FINAL) {
+        printf("| %8s |*", etat->nom);
+    } else {
+        printf("| %8s |", etat->nom);
+    }
 }
 
 
@@ -85,14 +89,17 @@ void mise_a_jour_etat(Automate *a, Etat* e, int id, char* nom, Status s) {
             e->status = FINAL;
             ajouter_etat_final(a, e);
         }
-    } else {
+    } else if (s == INITIAL_FINAL) {
         if (e->status == FINAL) {
             // pass
         } else if (e->status == INITIAL) {
-            // pass
+            e->status = INITIAL_FINAL;
+            ajouter_etat_final(a, e);
         } else {
             // pass
         }
+    } else if (s == NORMAL) {
+
     }
 }
 

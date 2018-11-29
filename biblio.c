@@ -18,6 +18,8 @@
 
 
 char fichier_init[30];
+int marquer_vecteur[MAX_INT];
+int __INIT__=1;
 
 FILE* ouvrir_fichier() {
     FILE* fichier = fopen(fichier_init, "r");
@@ -579,7 +581,7 @@ Automate *rendez_deterministe(Automate* automate) {
                     strcpy(nom_etat_2, ensemble_nouveau_etat[t]->nom);
                     cha2 = separer_chaine(nom_etat_2, " ;\n", &l2);
 
-                    printf("*%s*%s*", nom_etat, ensemble_nouveau_etat[t]->nom);
+                    //printf("*%s*%s*", nom_etat, ensemble_nouveau_etat[t]->nom);
 
                     /*printf("cha1 %d:", l1);
                     for (int b0=0; b0<l1; b0++) {
@@ -619,7 +621,7 @@ Automate *rendez_deterministe(Automate* automate) {
                 // banch-mark test
                 //afficher_instruction(inst);puts("\n");//int m;scanf("%d", &m);
                 ensemble_nouveau_instruction[nombre_instructions++] = inst;
-                puts("");
+                //puts("");
             }
         }
         // banch-mark test
@@ -632,6 +634,78 @@ Automate *rendez_deterministe(Automate* automate) {
     nouvelle_auto = creer_automate(nombre_etats, nombre_etats_finaux, nombre_instructions, nom_automate, nouvelle_alphabet, nouveau_etat_init, ensemble_nouveau_etat, ensemble_nouveau_etat_finaux, ensemble_nouveau_instruction);
     return nouvelle_auto;
 
+}
+
+int index_dans_ensemble(Etat **ensemble_etats, int nombre_etats, Etat *etat) {
+    for (int i=0; i<nombre_etats; i++) {
+        if (strcmp(ensemble_etats[i]->nom, etat->nom) == 0) {
+            return i;
+        }
+    }
+    return -1;   
+}
+
+void init_marquer_vecteur(Automate *automate) {
+    for (int i=0; i<automate->nombre_etat; i++) {
+        marquer_vecteur[i] = 0;
+    }
+}
+
+void depth_first_search(Automate *automate, Etat *etat_initial_de_parcoure) {
+    afficher_etat(etat_initial_de_parcoure);
+    puts("");
+    if (__INIT__) {
+        init_marquer_vecteur(automate);
+        __INIT__ = 0;
+    }
+    for (int i=0; i<automate->nombre_instructions; i++) {
+        if (!strcmp(automate->ensemble_instruction[i]->etat_src->nom, etat_initial_de_parcoure->nom)) {
+            int index = index_dans_ensemble(automate->ensemble_etat, automate->nombre_etat, automate->ensemble_instruction[i]->etat_dest);
+            if (!marquer_vecteur[index]) {
+                marquer_vecteur[index] = 1;
+                depth_first_search(automate, automate->ensemble_instruction[i]->etat_dest);
+            }
+        }
+    }
+}
+
+
+void chemin_entre_etats(Automate *automate, Etat *etat_depart, Etat *etat_arrive, int *return_value) {
+    if (!strcmp(etat_depart->nom, etat_arrive->nom)) {
+        *return_value=1;
+    }
+    if (__INIT__) {
+        init_marquer_vecteur(automate);
+        __INIT__ = 0;
+    }
+    for (int i=0; i<automate->nombre_instructions; i++) {
+        if (!strcmp(automate->ensemble_instruction[i]->etat_src->nom, etat_depart->nom)) {
+            int index = index_dans_ensemble(automate->ensemble_etat, automate->nombre_etat, automate->ensemble_instruction[i]->etat_dest);
+            if (!marquer_vecteur[index]) {
+                marquer_vecteur[index] = 1;
+                chemin_entre_etats(automate, automate->ensemble_instruction[i]->etat_dest, etat_arrive, return_value);
+            }
+        }
+    }
+}
+
+int etat_est_accessible(Automate* a, Etat* etat) {
+    int return_value=0;
+    chemin_entre_etats(a, a->etat_init, etat, &return_value);
+    __INIT__ = 1;
+    return return_value;
+}
+
+int etat_est_Co_accessible(Automate* a, Etat* etat) {
+    int return_value=0;
+    for(int i=0; i<a->nombre_etats_finaux; i++) {
+        chemin_entre_etats(a, etat, a->ensemble_etat_finaux[i], &return_value);
+        __INIT__ = 1;
+        if (return_value) {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 /****/

@@ -1,16 +1,18 @@
 DEBUT;
-Automate_qsdqsdqsd < X, S0, F, S, II >
+Automate_1 < X, S0, F, S, II >
 A 2
-4
 5
+6
 a b
 S0 INIT
 S1
 S2 FINAL
 S3 FINAL
+S4
 S0, a, S1
 S0, a, S2
 S0, b,S2
 S1, b,S3
 S1, b,S1
+S4, a, S1
 FIN;

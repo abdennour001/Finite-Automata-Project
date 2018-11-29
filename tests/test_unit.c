@@ -39,8 +39,11 @@ void test_unitaire() {
 
     //rendez_simple(automate);
     //afficher_automate(automate);
-    Automate *automate_deter = rendez_deterministe(automate);
-    afficher_automate(automate_deter);
+    //Automate *automate_deter = rendez_deterministe(automate);
+    //afficher_automate(automate_deter);
+
+    //depth_first_search(automate, automate->ensemble_etat[automate->nombre_etat-1]);
+    printf("%d\n", etat_est_Co_accessible(automate, automate->ensemble_etat[automate->nombre_etat-1]));
 
     //printf("%d - %d * %d\n", auto_est_complet(automate), auto_est_simple(automate), auto_est_deterministe(automate));
     //rendez_complet(automate);

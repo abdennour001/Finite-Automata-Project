@@ -24,6 +24,8 @@
 /** Declaration fichier .init **/
 extern char fichier_init[30];
 FILE* ouvrir_fichier();
+extern int __INIT__;
+extern int marquer_vecteur[MAX_INT];
 /****/
 
 /** Manupilation chaine de caractère pour lire le fichier .init **/
@@ -56,6 +58,15 @@ int etat_est_Co_accessible(Automate* a, Etat* etat);
 int rendez_simple(Automate* automate);
 Automate *rendez_deterministe(Automate* automate);
 void rendez_complet(Automate* automate);
+/***
+ * 
+ * etat_initial_de_parcoure : c'est l'état qu'on va parcourir l'automate a partir de lui
+ * 
+*/
+void depth_first_search(Automate *automate, Etat *etat_initial_de_parcoure); //Algorithme pour parcourir une automate
+int index_dans_ensemble(Etat **ensemble_etats, int nombre_etats, Etat *etat); // retourne l'index de l'état dans l'ensemble
+void init_marquer_vecteur(Automate *automate);
+void chemin_entre_etats(Automate *automate, Etat *etat_depart, Etat *etat_arrive, int *return_value);
 
 /****/
 

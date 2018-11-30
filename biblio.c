@@ -740,7 +740,7 @@ void verifier_debut(Mot *mot1, Mot *mot2) {
     } else {
 
     }
-}
+} 
 
 void eclater_mot(Mot *mot, int l) {
     if (mot->longeur < l) return;

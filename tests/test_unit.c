@@ -16,10 +16,20 @@
 #include "../externe/structure.h"
 
 void test_unitaire() {
-    Automate* automate = nouvelle_automate("./tests/Automate simple.init");
+    //Automate* automate = nouvelle_automate("./tests/Automate simple.init");
     Etat* e=creer_etat(++ID_ETAT_SYS, "new_etat1", FINAL);
     Etat* e1=creer_etat(++ID_ETAT_SYS, "new_etat2", NORMAL);
     Etat* e2=creer_etat(++ID_ETAT_SYS, "new_etat3", FINAL);
+    char *vect1[MAX_INT];
+    char *vect2[MAX_INT];
+    vect1[0] = (char *) malloc(MAX_INT * sizeof(char));
+    vect2[0] = (char *) malloc(MAX_INT * sizeof(char));
+    vect2[1] = (char *) malloc(MAX_INT * sizeof(char));
+    vect2[2] = (char *) malloc(MAX_INT * sizeof(char));
+    strcpy(vect1[0], "a");
+    strcpy(vect2[0], "a");strcpy(vect2[1], "b");strcpy(vect2[2], "a");
+    Mot *m=creer_mot(1, vect1);
+    Mot *m2=creer_mot(3, vect2);
     //ajouter_etat(automate, e);
     //ajouter_etat(automate, e1);
     //ajouter_etat(automate, e2);
@@ -37,8 +47,22 @@ void test_unitaire() {
     e9 = depiler(&p);
     printf("%d\n", e9 == NULL);*/
 
-    rendez_simple(automate);
-    afficher_automate(automate);
+    afficher_mot(m2);puts("");
+    eclater_mot(m2, 3);
+    afficher_mot(m2);puts("");
+
+    /*Pile_etat_mot *p=NULL;
+    PEtat_mot *etat_mot = creer_etat_mot(e, m);
+    empiler(&p, etat_mot);
+    PEtat_mot *etat_mot2 = creer_etat_mot(e1, m2);
+    empiler(&p, etat_mot2);
+
+    depiler_etat_mot(&p);
+
+    afficher_pile_etat_mot(p);*/
+
+    //rendez_simple(automate);
+    //afficher_automate(automate);
     //Automate *automate_deter = rendez_deterministe(automate);
     //afficher_automate(automate_deter);
 

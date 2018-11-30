@@ -734,6 +734,46 @@ int etat_est_Co_accessible(Automate* a, Etat* etat) {
     return 0;
 }
 
+void verifier_debut(Mot *mot1, Mot *mot2) {
+    if (mot1->longeur > mot2->longeur) {
+
+    } else {
+
+    }
+}
+
+void eclater_mot(Mot *mot, int l) {
+    if (mot->longeur < l) return;
+    for (int i=l; i<mot->longeur; i++) {
+        mot->vecteur_mot[i-l] = mot->vecteur_mot[i];
+    }
+    mot->longeur = mot->longeur - l;
+    if (!mot->longeur) {
+        mot->longeur = 1;
+        mot->vecteur_mot[0] = "~";
+    }
+}
+
+ /** Retourne tous les chemins réussi à la lecture du mot "mot_input" dans un vecteur
+
+    chaque taille d'un chemin réussi "i" est dans "vect_taille[i]", nombre_chemin_reussi contien le nobmbre des chemins trouvés  
+**/
+
+Instruction **rechercher_chemins_reussi(Automate *automate, Mot *mot, int vect_taille[], int *nombre_chemin_reussi) {
+    Instruction **ensemble_chemin_reussi=malloc(MAX_INT * sizeof(Instruction));
+    Pile_etat_mot *pile_sys=NULL;
+    *nombre_chemin_reussi=0;
+    
+    // empiler l'état initial
+    PEtat_mot *etat_mot_aig = creer_etat_mot(automate->etat_init, mot);
+    empiler_etat_mot(&pile_sys, etat_mot_aig);
+
+    while (!pilevide_etat_mot(pile_sys)) {
+
+    }
+    return ensemble_chemin_reussi;
+}
+
 /****/
 
 /****/

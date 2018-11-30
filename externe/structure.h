@@ -18,12 +18,24 @@
 #include <string.h>
 #include "../structure.h"
 
+typedef struct Petat_mot {
+    Etat *etat;
+    Mot *mot;
+} PEtat_mot;
+
+PEtat_mot *creer_etat_mot(Etat *etat, Mot *mot);
+
+typedef struct Pile_etat_mot {
+    PEtat_mot *etat_mot;
+    struct Pile_etat_mot *suiv;
+} Pile_etat_mot;
 
 typedef struct Pile {
     Etat* etat;
     struct Pile *suiv;
 } Pile;
 
+/** API : Pile simple **/
 
 Pile *allouer();
 void aff_val(Pile *p,Etat* etat);
@@ -35,5 +47,24 @@ Etat *depiler(Pile **p);
 int pilevide(Pile *p);
 void afficher_pile(Pile *p); //Afficher une LLc, si la liste est vide donc rien va afficher a l'ecran ...
 
+/**
+ * 
+*/
+
+/** API : Pile etat_mot**/
+
+
+Pile_etat_mot *allouer_pile_etat_mot();
+void aff_val_etat_mot(Pile_etat_mot *p,PEtat_mot *etat_mot);
+void aff_adr_etat_mot(Pile_etat_mot *p,Pile_etat_mot *q);
+Pile_etat_mot *suivant_etat_mot(Pile_etat_mot *p);
+PEtat_mot* valeur_etat_mot(Pile_etat_mot *p);
+void empiler_etat_mot(Pile_etat_mot **p, PEtat_mot* c);
+PEtat_mot *depiler_etat_mot(Pile_etat_mot **p);
+int pilevide_etat_mot(Pile_etat_mot *p);
+void afficher_pile_etat_mot(Pile_etat_mot *p); //Afficher une LLc, si la liste est vide donc rien va afficher a l'ecran ...
+
+/**
+ * **/
 
 #endif

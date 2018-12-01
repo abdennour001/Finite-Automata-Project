@@ -68,8 +68,10 @@ int index_dans_ensemble(Etat **ensemble_etats, int nombre_etats, Etat *etat); //
 void init_marquer_vecteur(Automate *automate);
 void chemin_entre_etats(Automate *automate, Etat *etat_depart, Etat *etat_arrive, int *return_value);
 
-void verifier_debut(Mot *mot1, Mot *mot2);
-void eclater_mot(Mot *mot, int l);
+int verifier_facteur_gauche(Mot *mot1, Mot *mot2); // par exemple : mot1 = abaab et mot2 = aba donc la fonction retourne
+                                            // 1 car mot1 et mot2 sont égale dans les 3 premiers lettres, 
+                                            // on peut dire que return 1 si mot2 est un facteur gauche de mot1 
+Mot *eclater_mot(Mot *mot, int l);
 Instruction **rechercher_chemins_reussi(Automate *automate, Mot *mot, int vect_taille[], int *nombre_chemin_reussi); /** Retourne tous les chemins réussi à la lecture du mot "mot_input" dans un vecteur
 
     chaque taille d'un chemin réussi "i" est dans "vect_taille[i]", nombre_chemin_reussi contien le nobmbre des chemins trouvés  

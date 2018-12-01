@@ -147,7 +147,7 @@ Automate* lire_fichier_init(char* nom_fichier_init) {
     ensemble_etats = malloc(MAX_INT * sizeof(Etat)); // Allouer nombre_etat Etat dans la memoire
     ensemble_etats_finaux = malloc(MAX_INT * sizeof(Etat));
 
-    char** aig_etat; char** aig_mot;
+    char** aig_etat; char** aig_mot = malloc(MAX_INT * sizeof(char*));
 
     for (int k=0; k<nombre_etats; k++) {
         Etat* etat_;
@@ -191,11 +191,11 @@ Automate* lire_fichier_init(char* nom_fichier_init) {
         aig_etat = separer_chaine(ligne, ",\n", &type_instruction);
 
         int nombre_lettre_mot_lecture=0;
-        char* sauv=(char *)malloc(sizeof(char));
+        char* sauv=(char *)malloc(MAX_INT * sizeof(char));
         
         // pour elimine les escpaces 
-        char* sauv_src=(char *)malloc(sizeof(char));
-        char* sauv_dest=(char *)malloc(sizeof(char));
+        char* sauv_src=(char *)malloc(MAX_INT * sizeof(char));
+        char* sauv_dest=(char *)malloc(MAX_INT * sizeof(char));
 
         if (type_instruction == 3) {
             strcpy(sauv, aig_etat[1]);
@@ -734,24 +734,26 @@ int etat_est_Co_accessible(Automate* a, Etat* etat) {
     return 0;
 }
 
-void verifier_debut(Mot *mot1, Mot *mot2) {
-    if (mot1->longeur > mot2->longeur) {
-
-    } else {
-
+int verifier_facteur_gauche(Mot *mot1, Mot *mot2) {
+    if (mot1->longeur < mot2->longeur) return 0;
+    for (int i=0; i<mot2->longeur; i++) {
+        if (strcmp(mot1->vecteur_mot[i], mot2->vecteur_mot[i])) return 0;
     }
+    return 1;
 } 
 
-void eclater_mot(Mot *mot, int l) {
-    if (mot->longeur < l) return;
-    for (int i=l; i<mot->longeur; i++) {
-        mot->vecteur_mot[i-l] = mot->vecteur_mot[i];
+Mot *eclater_mot(Mot *mot, int l) {
+    if (mot->longeur < l) return NULL;
+    Mot *mot__=creer_mot(mot->longeur, mot->vecteur_mot);
+    for (int i=l; i<mot__->longeur; i++) {
+        mot__->vecteur_mot[i-l] = mot__->vecteur_mot[i];
     }
-    mot->longeur = mot->longeur - l;
-    if (!mot->longeur) {
-        mot->longeur = 1;
-        mot->vecteur_mot[0] = "~";
+    mot__->longeur = mot__->longeur - l;
+    if (!mot__->longeur) {
+        mot__->longeur = 1;
+        mot__->vecteur_mot[0] = "~";
     }
+    return mot__;
 }
 
  /** Retourne tous les chemins réussi à la lecture du mot "mot_input" dans un vecteur
@@ -769,7 +771,23 @@ Instruction **rechercher_chemins_reussi(Automate *automate, Mot *mot, int vect_t
     empiler_etat_mot(&pile_sys, etat_mot_aig);
 
     while (!pilevide_etat_mot(pile_sys)) {
-
+        PEtat_mot *sauv=creer_etat_mot(pile_sys->etat_mot->etat, pile_sys->etat_mot->mot);
+        for (int i=0; i<automate->nombre_instructions; i++) {
+            if (!strcmp(automate->ensemble_instruction[i]->etat_src->nom, pile_sys->etat_mot->etat->nom)) {
+                // nous somme dans l'instruction
+                printf("%djlkjkl ", i);
+                if (verifier_facteur_gauche(pile_sys->etat_mot->mot, automate->ensemble_instruction[i]->mot)) {
+                    PEtat_mot *etat_mot_aig = creer_etat_mot(automate->ensemble_instruction[i]->etat_dest, eclater_mot(pile_sys->etat_mot->mot, automate->ensemble_instruction[i]->mot));
+                    empiler_etat_mot(&pile_sys, etat_mot_aig);
+                    afficher_pile_etat_mot(pile_sys);puts("");
+                }
+            }
+            // tester si le mot restant est EPSILON et l'etat est final
+        }
+        if ((pile_sys->etat_mot->etat->status == FINAL || pile_sys->etat_mot->etat->status == FINAL) &&
+            (!strcmp(pile_sys->etat_mot->mot, EPSILON)) || ((!strcmp(pile_sys->etat_mot->etat->nom, sauv->etat->nom)) && (pile_sys->etat_mot->mot->longeur == sauv->mot->longeur))) {
+                depiler_etat_mot(&pile_sys);
+        }
     }
     return ensemble_chemin_reussi;
 }

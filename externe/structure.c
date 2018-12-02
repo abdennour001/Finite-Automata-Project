@@ -162,3 +162,84 @@ void afficher_pile_etat_mot(Pile_etat_mot *p) { //Afficher une LLc, si la liste 
 
 /**
  * **/
+
+/*
+    API Pile Instruction 
+*/
+
+Pile_instruction *allouer_pile_instruction()/** UNE FONCTION QUI ALLOUER UNE ADRESSE OU UNE PLACE DANS LA MEMOIRE POUR UNE MAILLON DANS LA LISTE **/
+{
+	return ((Pile_instruction *)malloc(sizeof(Pile_instruction)));
+}
+
+void aff_val_instruction(Pile_instruction *p,Instruction* instruction)/** UNE FONCTION QUI METTRE UNE VALEUR 'V' DANS LE CHAMPS VALEUR DE LA MAILLON POINTEE PAR P DANS LA MEMOIRE **/
+{
+	p->instruction=instruction;//e.i *p.val=v;
+}
+
+void aff_adr_instruction(Pile_instruction *p,Pile_instruction *q)/** UNE FONCTION QUI METTRE UNE ADRESSE 'PIONTEE PAR Q ' DANS LE CHAMPS VALEUR DE LA MAILLON POINTEE PAR P DANS LA MEMOIRE **/
+{
+	p->suiv=q;
+}
+
+Pile_instruction *suivant_instruction(Pile_instruction *p)/** AFFICHER LE CONTENUE DU CHAMPS ADRESSE DANS LA MAILLON POINTEE PAR P  **/
+{
+	return (p->suiv);
+}
+
+Instruction* valeur_instruction(Pile_instruction *p)/** AFFICHER LE CONTENUE DU CHAMPS VALEUR DANS LA MAILLON POINTEE PAR P **/
+{
+	return (p->instruction);
+}
+
+void empiler_instruction(Pile_instruction **p, Instruction* instruction)
+{
+    Pile_instruction *q ;
+    //-----------------------
+    q = allouer_pile_instruction();
+    aff_adr_instruction(q,*p);
+    aff_val_instruction(q,instruction);
+    *p = q;
+    return 0;
+}
+
+Instruction *depiler_instruction(Pile_instruction **p)
+{
+    Pile_instruction *sauv; Instruction *return_val;
+
+    if(!pilevide_instruction(*p))
+    {
+        sauv = *p ;
+        return_val = sauv->instruction;
+        *p = suivant_instruction(*p);
+        sauv = NULL;
+    }
+    else
+    {
+        return NULL;
+    }
+    return return_val;
+}
+
+int pilevide_instruction(Pile_instruction *p)
+{
+    if(p == NULL) return(1);
+        else return(0);
+}
+
+void afficher_pile_instruction(Pile_instruction *p) //Afficher une LLc, si la liste est vide donc rien va afficher a l'ecran ...
+{
+	Pile_instruction  *q;
+
+	q = p;
+	while(q != NULL )
+	{
+		afficher_instruction_sans_detail(valeur_instruction(q));
+        printf("\n");
+		q=suivant_instruction(q);
+	}
+}
+
+/*
+
+***/

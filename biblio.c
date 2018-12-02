@@ -761,10 +761,10 @@ Mot *eclater_mot(Mot *mot, int l) {
     chaque taille d'un chemin réussi "i" est dans "vect_taille[i]", nombre_chemin_reussi contien le nobmbre des chemins trouvés  
 **/
 
-Instruction **rechercher_chemins_reussi(Automate *automate, Mot *mot, int vect_taille[], int *nombre_chemin_reussi) {
+Instruction **rechercher_chemins_reussi(Automate *automate, Mot *mot, int vect_taille[MAX_INT], int *nombre_chemin_reussi) {
     Instruction **ensemble_chemin_reussi=malloc(MAX_INT * sizeof(Instruction));
-    Pile_etat_mot *pile_sys=NULL;
-    *nombre_chemin_reussi=0;
+    Pile_etat_mot *pile_sys=NULL; Pile_instruction *pile_sys_inst=NULL;
+    *nombre_chemin_reussi=0;int n_i=0;
 
     /****/
     Mot *marqueur_instruction[automate->nombre_instructions];
@@ -805,6 +805,8 @@ Instruction **rechercher_chemins_reussi(Automate *automate, Mot *mot, int vect_t
                     }
                     //printf("Empiler : ");afficher_etat(etat_mot_aig->etat);printf(" <> ");afficher_mot(etat_mot_aig->mot);puts("");
                     empiler_etat_mot(&pile_sys, etat_mot_aig);
+                    // empiler le chemin (l'instruction)
+                    empiler_instruction(&pile_sys_inst, automate->ensemble_instruction[i]);
                 }
             }
             // tester si le mot restant est EPSILON et l'etat est final
@@ -820,13 +822,30 @@ Instruction **rechercher_chemins_reussi(Automate *automate, Mot *mot, int vect_t
          ) {
                 if (((pile_sys->etat_mot->etat->status == FINAL || pile_sys->etat_mot->etat->status == INITIAL_FINAL) &&
                     (!strcmp(pile_sys->etat_mot->mot->vecteur_mot[0], EPSILON)))) {
-                        printf("DONE === \n");
-                        afficher_pile_etat_mot(pile_sys);
-                        printf("DONE === \n");
+                        //printf("DONE === \n");
+                        //afficher_pile_etat_mot(pile_sys);puts("PATH");
+                        //afficher_pile_instruction(pile_sys_inst);
+                        //ajouter le chemin a l'ensemble de retour
+                        int i_r=0;
+                        Pile_instruction *sauv_pile_instr=pile_sys_inst;
+
+                        while (sauv_pile_instr != NULL) {
+                            //afficher_instruction_sans_detail(sauv_pile_instr->instruction);puts("");
+                            ensemble_chemin_reussi[n_i++] = sauv_pile_instr->instruction;i_r++;
+                            //afficher_instruction_sans_detail(ensemble_chemin_reussi[n_i-1]);puts("");
+                            sauv_pile_instr = suivant_instruction(sauv_pile_instr);
+                        } 
+
+                        vect_taille[*nombre_chemin_reussi]=i_r;
+                        *nombre_chemin_reussi = *nombre_chemin_reussi + 1;
+                        //n_i = 0;
+
+                        //printf("DONE === \n");
                 }
                 PEtat_mot *p=NULL;
                 //puts("BEGIN");
                 p = depiler_etat_mot(&pile_sys);
+                depiler_instruction(&pile_sys_inst);
                 //printf("Depiler : ");afficher_etat(p->etat);printf(" <> ");afficher_mot(p->mot);puts(sauv->etat->nom);puts("");
 
                 while (1) {
@@ -834,6 +853,7 @@ Instruction **rechercher_chemins_reussi(Automate *automate, Mot *mot, int vect_t
                     if (pile_sys != NULL && !strcmp(pile_sys->etat_mot->etat->nom, p->etat->nom)) {
                         //afficher_pile_etat_mot(pile_sys);
                         p = depiler_etat_mot(&pile_sys);
+                        depiler_instruction(&pile_sys_inst);
                         //printf("%d ---- ", p != NULL && !strcmp(p->etat->nom, sauv->etat->nom));
                         //printf("Depiler : ");afficher_etat(p->etat);printf(" <> ");afficher_mot(p->mot);puts("");
                     } else {

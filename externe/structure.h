@@ -35,6 +35,11 @@ typedef struct Pile {
     struct Pile *suiv;
 } Pile;
 
+typedef struct Pile_instruction {
+    Instruction* instruction;
+    struct Pile_instruction *suiv;
+} Pile_instruction;
+
 /** API : Pile simple **/
 
 Pile *allouer();
@@ -51,7 +56,10 @@ void afficher_pile(Pile *p); //Afficher une LLc, si la liste est vide donc rien 
  * 
 */
 
-/** API : Pile etat_mot**/
+/** 
+ * API : Pile etat_mot
+ * 
+ * **/
 
 
 Pile_etat_mot *allouer_pile_etat_mot();
@@ -63,6 +71,25 @@ void empiler_etat_mot(Pile_etat_mot **p, PEtat_mot* c);
 PEtat_mot *depiler_etat_mot(Pile_etat_mot **p);
 int pilevide_etat_mot(Pile_etat_mot *p);
 void afficher_pile_etat_mot(Pile_etat_mot *p); //Afficher une LLc, si la liste est vide donc rien va afficher a l'ecran ...
+
+/**
+ * **/
+
+/**
+ * API : Pile Instruction 
+ * **/
+
+
+Pile_instruction *allouer_pile_instruction();
+void aff_val_instruction(Pile_instruction *p,Instruction* Instruction);
+void aff_adr_instruction(Pile_instruction *p,Pile_instruction *q);
+Pile_instruction *suivant_instruction(Pile_instruction *p);
+Instruction* valeur_instruction(Pile_instruction *p);
+void empiler_instruction(Pile_instruction **p, Instruction* c);
+Instruction *depiler_instruction(Pile_instruction **p);
+int pilevide_instruction(Pile_instruction *p);
+void afficher_pile_instruction(Pile_instruction *p); //Afficher une LLc, si la liste est vide donc rien va afficher a l'ecran ...
+
 
 /**
  * **/

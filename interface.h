@@ -12,7 +12,13 @@
  * 
  * **/
 
+#include "structure.h"
+#include "biblio.h"
+
 void aff_msg_debut();
 void aff_menu();
+
+
+Mot *lire_mot();
 
 #endif

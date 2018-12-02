@@ -14,6 +14,7 @@
 #include "../structure.h"
 #include "../biblio.h"
 #include "../externe/structure.h"
+#include "../interface.h"
 
 void test_unitaire() {
     Automate* automate = nouvelle_automate("./tests/Automate simple.init");
@@ -37,9 +38,24 @@ void test_unitaire() {
     strcpy(vect1[1], "b");
     strcpy(vect1[2], "a");
 
+    Mot *mot = lire_mot();
+
+    // tester pile instruction
+    /*Pile_instruction *p=NULL;
+    empiler_instruction(&p, automate->ensemble_instruction[0]);
+    empiler_instruction(&p, automate->ensemble_instruction[1]); 
+    empiler_instruction(&p, automate->ensemble_instruction[2]);
+
+    depiler_instruction(&p);
+    depiler_instruction(&p);
+
+
+    afficher_pile_instruction(p); */
+
+
     strcpy(vect2[0], "b");strcpy(vect2[1], "a");strcpy(vect2[2], "b");strcpy(vect2[3], "a");strcpy(vect2[4], "b");
     strcpy(vect2[5], "b");strcpy(vect2[6], "b");
-    Mot *m=creer_mot(2, vect1);
+    Mot *m=creer_mot(3, vect1);
     Mot *m2=creer_mot(7, vect2);
     //ajouter_etat(automate, e);
     //ajouter_etat(automate, e1);
@@ -66,11 +82,23 @@ void test_unitaire() {
     //printf("%d\n", verifier_facteur_gauche(m2, m));
 
     //afficher_automate(automate);
-    int vect[MAX_INT]; int i;
     //rendez_simple(automate);
     //automate = rendez_deterministe(automate);
     //afficher_automate(automate);
-    rechercher_chemins_reussi(automate, m2, vect, &i);
+    Instruction** ensemble_path;
+    int vect[MAX_INT]; int i;
+    ensemble_path = rechercher_chemins_reussi(automate, mot, vect, &i);
+
+    //printf("%d\n", i);
+    int s=0;
+    for (int o=0; o<i;o++) {
+        printf("PATH # %d\n", o);
+        //printf();
+        for (int u=vect[o]-1; u>=0; u--) {
+            afficher_instruction_sans_detail(ensemble_path[u+s]);puts("");
+        }
+        s += vect[o];
+    }
 
     /*Pile_etat_mot *p=NULL;
     PEtat_mot *etat_mot = creer_etat_mot(e, m);

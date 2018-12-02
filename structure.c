@@ -233,6 +233,10 @@ Instruction* rechercher_instruction(Automate* a, Etat* src, Etat* dest, Mot* mot
     return NULL;
 }
 
+int instr_est_boucle(Instruction *i) {
+    return !strcmp(i->etat_dest->nom, i->etat_src->nom);
+}
+
 /**/
 
 /*** Implementation des fonctions d'Automate ***/

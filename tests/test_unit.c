@@ -30,14 +30,17 @@ void test_unitaire() {
     vect2[2] = (char *) malloc(MAX_INT * sizeof(char));
     vect2[3] = (char *) malloc(MAX_INT * sizeof(char));
     vect2[4] = (char *) malloc(MAX_INT * sizeof(char));
+    vect2[5] = (char *) malloc(MAX_INT * sizeof(char));
+    vect2[6] = (char *) malloc(MAX_INT * sizeof(char));
 
     strcpy(vect1[0], "a");
     strcpy(vect1[1], "b");
     strcpy(vect1[2], "a");
 
-    strcpy(vect2[0], "b");strcpy(vect2[1], "a");strcpy(vect2[2], "b");strcpy(vect2[3], "b");strcpy(vect2[4], "b");
+    strcpy(vect2[0], "b");strcpy(vect2[1], "a");strcpy(vect2[2], "b");strcpy(vect2[3], "a");strcpy(vect2[4], "b");
+    strcpy(vect2[5], "b");strcpy(vect2[6], "b");
     Mot *m=creer_mot(2, vect1);
-    Mot *m2=creer_mot(5, vect2);
+    Mot *m2=creer_mot(7, vect2);
     //ajouter_etat(automate, e);
     //ajouter_etat(automate, e1);
     //ajouter_etat(automate, e2);
@@ -62,8 +65,11 @@ void test_unitaire() {
 
     //printf("%d\n", verifier_facteur_gauche(m2, m));
 
-    afficher_automate(automate);
+    //afficher_automate(automate);
     int vect[MAX_INT]; int i;
+    //rendez_simple(automate);
+    //automate = rendez_deterministe(automate);
+    //afficher_automate(automate);
     rechercher_chemins_reussi(automate, m2, vect, &i);
 
     /*Pile_etat_mot *p=NULL;

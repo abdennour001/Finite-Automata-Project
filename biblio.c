@@ -765,6 +765,18 @@ Instruction **rechercher_chemins_reussi(Automate *automate, Mot *mot, int vect_t
     Instruction **ensemble_chemin_reussi=malloc(MAX_INT * sizeof(Instruction));
     Pile_etat_mot *pile_sys=NULL;
     *nombre_chemin_reussi=0;
+
+    /****/
+    Mot *marqueur_instruction[automate->nombre_instructions];
+
+    for (int i=0; i<automate->nombre_instructions; i++) {
+        char **vect__ = malloc(sizeof(char *));
+        vect__[0] = malloc(30 * sizeof(char));
+        strcpy(vect__[0], "XXXXXXX");
+        Mot *mot_vide=creer_mot(1, vect__);
+        marqueur_instruction[i] = mot_vide;
+    }
+    /****/
     
     // empiler l'état initial
     PEtat_mot *etat_mot_aig = creer_etat_mot(automate->etat_init, mot);
@@ -775,30 +787,61 @@ Instruction **rechercher_chemins_reussi(Automate *automate, Mot *mot, int vect_t
 
         PEtat_mot *sauv=creer_etat_mot(pile_sys->etat_mot->etat, pile_sys->etat_mot->mot);
 
+        //afficher_pile_etat_mot(pile_sys);puts("");
+
+
         for (int i=0; i<automate->nombre_instructions; i++) {
 
             if (!strcmp(automate->ensemble_instruction[i]->etat_src->nom, pile_sys->etat_mot->etat->nom)) {
                 // nous somme dans l'instruction
-                if (verifier_facteur_gauche(pile_sys->etat_mot->mot, automate->ensemble_instruction[i]->mot)) {
+                //afficher_mot(marqueur_instruction[i]);printf("--");afficher_mot(pile_sys->etat_mot->mot);
+                //printf("%d**", mot_compare(marqueur_instruction[i], pile_sys->etat_mot->mot));
+                //printf("%d==", verifier_facteur_gauche(pile_sys->etat_mot->mot, automate->ensemble_instruction[i]->mot));
+                if ( (!mot_compare(marqueur_instruction[i], pile_sys->etat_mot->mot)) && verifier_facteur_gauche(pile_sys->etat_mot->mot, automate->ensemble_instruction[i]->mot)) {
                     PEtat_mot *etat_mot_aig = creer_etat_mot(automate->ensemble_instruction[i]->etat_dest, eclater_mot(pile_sys->etat_mot->mot, automate->ensemble_instruction[i]->mot->longeur));
+                    //afficher_mot(marqueur_instruction[i]);printf("--");afficher_mot(pile_sys->etat_mot->mot);puts("");
+                    if (!instr_est_boucle(automate->ensemble_instruction[i])) {
+                        marqueur_instruction[i] = pile_sys->etat_mot->mot;
+                    }
+                    //printf("Empiler : ");afficher_etat(etat_mot_aig->etat);printf(" <> ");afficher_mot(etat_mot_aig->mot);puts("");
                     empiler_etat_mot(&pile_sys, etat_mot_aig);
                 }
             }
             // tester si le mot restant est EPSILON et l'etat est final
         }
 
+        //afficher_pile_etat_mot(pile_sys);puts("");
+
+
         //int k;scanf("%d", &k);
 
         if (((pile_sys->etat_mot->etat->status == FINAL || pile_sys->etat_mot->etat->status == INITIAL_FINAL) &&
-            (!strcmp(pile_sys->etat_mot->mot->vecteur_mot[0], EPSILON))) || ((!strcmp(pile_sys->etat_mot->etat->nom, sauv->etat->nom)) && (pile_sys->etat_mot->mot->longeur == sauv->mot->longeur))) {
+            (!strcmp(pile_sys->etat_mot->mot->vecteur_mot[0], EPSILON))) || ((!strcmp(pile_sys->etat_mot->etat->nom, sauv->etat->nom)) && (pile_sys->etat_mot->mot->longeur == sauv->mot->longeur))
+         ) {
                 if (((pile_sys->etat_mot->etat->status == FINAL || pile_sys->etat_mot->etat->status == INITIAL_FINAL) &&
                     (!strcmp(pile_sys->etat_mot->mot->vecteur_mot[0], EPSILON)))) {
-                        break;
+                        printf("DONE === \n");
+                        afficher_pile_etat_mot(pile_sys);
+                        printf("DONE === \n");
                 }
-                depiler_etat_mot(&pile_sys);
+                PEtat_mot *p=NULL;
+                //puts("BEGIN");
+                p = depiler_etat_mot(&pile_sys);
+                //printf("Depiler : ");afficher_etat(p->etat);printf(" <> ");afficher_mot(p->mot);puts(sauv->etat->nom);puts("");
+
+                while (1) {
+                    //afficher_pile_etat_mot(pile_sys);puts("");
+                    if (pile_sys != NULL && !strcmp(pile_sys->etat_mot->etat->nom, p->etat->nom)) {
+                        //afficher_pile_etat_mot(pile_sys);
+                        p = depiler_etat_mot(&pile_sys);
+                        //printf("%d ---- ", p != NULL && !strcmp(p->etat->nom, sauv->etat->nom));
+                        //printf("Depiler : ");afficher_etat(p->etat);printf(" <> ");afficher_mot(p->mot);puts("");
+                    } else {
+                        break;
+                    }
+                }
         }
     }
-    afficher_pile_etat_mot(pile_sys);puts("");
     return ensemble_chemin_reussi;
 }
 

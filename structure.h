@@ -109,6 +109,7 @@ void set_etat_dest(Instruction* i, Etat* e_d);
 void set_id_instruction(Instruction* i, int id);
 void afficher_instruction(Instruction *i);
 void afficher_instruction_sans_detail(Instruction *i);
+int instr_est_boucle(Instruction *i);
 /**/
 
 /** Structure d'une Automate A = <X, S0, F, S, II> **/

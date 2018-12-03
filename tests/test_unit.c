@@ -34,7 +34,7 @@ void test_unitaire() {
     vect2[5] = (char *) malloc(MAX_INT * sizeof(char));
     vect2[6] = (char *) malloc(MAX_INT * sizeof(char));
 
-    strcpy(vect1[0], "a");
+    strcpy(vect1[0], "~");
     strcpy(vect1[1], "b");
     strcpy(vect1[2], "a");
 
@@ -55,7 +55,7 @@ void test_unitaire() {
 
     strcpy(vect2[0], "b");strcpy(vect2[1], "a");strcpy(vect2[2], "b");strcpy(vect2[3], "a");strcpy(vect2[4], "b");
     strcpy(vect2[5], "b");strcpy(vect2[6], "b");
-    Mot *m=creer_mot(3, vect1);
+    Mot *m=creer_mot(1, vect1);
     Mot *m2=creer_mot(7, vect2);
     //ajouter_etat(automate, e);
     //ajouter_etat(automate, e1);
@@ -85,20 +85,8 @@ void test_unitaire() {
     //rendez_simple(automate);
     //automate = rendez_deterministe(automate);
     //afficher_automate(automate);
-    Instruction** ensemble_path;
-    int vect[MAX_INT]; int i;
-    ensemble_path = rechercher_chemins_reussi(automate, mot, vect, &i);
-
-    //printf("%d\n", i);
-    int s=0;
-    for (int o=0; o<i;o++) {
-        printf("PATH # %d\n", o);
-        //printf();
-        for (int u=vect[o]-1; u>=0; u--) {
-            afficher_instruction_sans_detail(ensemble_path[u+s]);puts("");
-        }
-        s += vect[o];
-    }
+    
+    aff_chemin_reussi(automate, mot);
 
     /*Pile_etat_mot *p=NULL;
     PEtat_mot *etat_mot = creer_etat_mot(e, m);

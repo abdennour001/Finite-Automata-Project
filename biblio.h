@@ -72,6 +72,7 @@ int verifier_facteur_gauche(Mot *mot1, Mot *mot2); // par exemple : mot1 = abaab
                                             // 1 car mot1 et mot2 sont égale dans les 3 premiers lettres, 
                                             // on peut dire que return 1 si mot2 est un facteur gauche de mot1 
 Mot *eclater_mot(Mot *mot, int l);
+char *generer_chemin(Pile_instruction *pile_inst);
 Instruction **rechercher_chemins_reussi(Automate *automate, Mot *mot, int vect_taille[], int *nombre_chemin_reussi); /** Retourne tous les chemins réussi à la lecture du mot "mot_input" dans un vecteur
 
     chaque taille d'un chemin réussi "i" est dans "vect_taille[i]", nombre_chemin_reussi contien le nobmbre des chemins trouvés  

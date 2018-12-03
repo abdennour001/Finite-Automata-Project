@@ -17,6 +17,7 @@
 #define MAX_INT 1000
 #define EPSILON "~"
 
+
 /**/
 
 extern int ID_ETAT_SYS;

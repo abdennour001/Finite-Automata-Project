@@ -736,6 +736,7 @@ int etat_est_Co_accessible(Automate* a, Etat* etat) {
 
 int verifier_facteur_gauche(Mot *mot1, Mot *mot2) {
     if (mot1->longeur < mot2->longeur) return 0;
+    //if (!strcmp(mot2->vecteur_mot[0], EPSILON)) return 1;
     for (int i=0; i<mot2->longeur; i++) {
         if (strcmp(mot1->vecteur_mot[i], mot2->vecteur_mot[i])) return 0;
     }
@@ -756,6 +757,21 @@ Mot *eclater_mot(Mot *mot, int l) {
     return mot__;
 }
 
+char *generer_chemin(Pile_instruction *pile_inst) {
+    Pile_instruction *p=pile_inst;
+    char *string__=malloc(MAX_INT * sizeof(char));
+    strcpy(string__, "");
+    while (p != NULL) {
+        sprintf(string__,"%s-%s",string__, p->instruction->etat_src->nom, p->instruction->etat_dest->nom);
+        for (int i=0; i<p->instruction->mot->longeur; i++) {
+           sprintf(string__, "%s%s", string__, p->instruction->mot->vecteur_mot[i]);
+        }
+        sprintf(string__,"%s%s",string__, p->instruction->etat_dest->nom);
+        p = suivant_instruction(p);
+    }
+    return string__;
+}
+
  /** Retourne tous les chemins réussi à la lecture du mot "mot_input" dans un vecteur
 
     chaque taille d'un chemin réussi "i" est dans "vect_taille[i]", nombre_chemin_reussi contien le nobmbre des chemins trouvés  
@@ -767,14 +783,15 @@ Instruction **rechercher_chemins_reussi(Automate *automate, Mot *mot, int vect_t
     *nombre_chemin_reussi=0;int n_i=0;
 
     /****/
-    Mot *marqueur_instruction[automate->nombre_instructions];
+    char *marqueur_instruction[automate->nombre_instructions];
 
     for (int i=0; i<automate->nombre_instructions; i++) {
-        char **vect__ = malloc(sizeof(char *));
-        vect__[0] = malloc(30 * sizeof(char));
-        strcpy(vect__[0], "XXXXXXX");
-        Mot *mot_vide=creer_mot(1, vect__);
-        marqueur_instruction[i] = mot_vide;
+        //char **vect__ = malloc(sizeof(char *));
+        //vect__[0] = malloc(30 * sizeof(char));
+        //strcpy(vect__[0], "XXXXXXX");
+       //Mot *mot_vide=creer_mot(1, vect__);
+        marqueur_instruction[i] = malloc(MAX_INT * sizeof(char));
+        strcpy(marqueur_instruction[i], "XXXXXXXXX");
     }
     /****/
     
@@ -794,16 +811,27 @@ Instruction **rechercher_chemins_reussi(Automate *automate, Mot *mot, int vect_t
 
             if (!strcmp(automate->ensemble_instruction[i]->etat_src->nom, pile_sys->etat_mot->etat->nom)) {
                 // nous somme dans l'instruction
+                /*if (!strcmp(automate->ensemble_instruction[i]->etat_src->nom, "S3")) {
+                        puts("----");
+                        puts(generer_chemin(pile_sys_inst));
+                        puts(marqueur_instruction[i]);
+                        puts("-----");
+                }*/
                 //afficher_mot(marqueur_instruction[i]);printf("--");afficher_mot(pile_sys->etat_mot->mot);
                 //printf("%d**", mot_compare(marqueur_instruction[i], pile_sys->etat_mot->mot));
                 //printf("%d==", verifier_facteur_gauche(pile_sys->etat_mot->mot, automate->ensemble_instruction[i]->mot));
-                if ( (!mot_compare(marqueur_instruction[i], pile_sys->etat_mot->mot)) && verifier_facteur_gauche(pile_sys->etat_mot->mot, automate->ensemble_instruction[i]->mot)) {
-                    PEtat_mot *etat_mot_aig = creer_etat_mot(automate->ensemble_instruction[i]->etat_dest, eclater_mot(pile_sys->etat_mot->mot, automate->ensemble_instruction[i]->mot->longeur));
+                if ( (strcmp(marqueur_instruction[i], generer_chemin(pile_sys_inst))) && verifier_facteur_gauche(pile_sys->etat_mot->mot, automate->ensemble_instruction[i]->mot)) {
+                    //PEtat_mot *etat_mot_aig = creer_etat_mot(automate->ensemble_instruction[i]->etat_dest, eclater_mot(pile_sys->etat_mot->mot, automate->ensemble_instruction[i]->mot->longeur));
+                    //if (strcmp(automate->ensemble_instruction[i]->mot->vecteur_mot[0], EPSILON)) {
+                        PEtat_mot *etat_mot_aig = creer_etat_mot(automate->ensemble_instruction[i]->etat_dest, eclater_mot(pile_sys->etat_mot->mot, automate->ensemble_instruction[i]->mot->longeur));
+                    //} else {
+                      //  PEtat_mot *etat_mot_aig = creer_etat_mot(automate->ensemble_instruction[i]->etat_dest, pile_sys->etat_mot->mot);
+                    //}
                     //afficher_mot(marqueur_instruction[i]);printf("--");afficher_mot(pile_sys->etat_mot->mot);puts("");
                     if (!instr_est_boucle(automate->ensemble_instruction[i])) {
-                        marqueur_instruction[i] = pile_sys->etat_mot->mot;
+                        strcpy(marqueur_instruction[i], generer_chemin(pile_sys_inst));
                     }
-                    //printf("Empiler : ");afficher_etat(etat_mot_aig->etat);printf(" <> ");afficher_mot(etat_mot_aig->mot);puts("");
+                    printf("Empiler : ");afficher_etat(etat_mot_aig->etat);printf(" <> ");afficher_mot(etat_mot_aig->mot);puts("");
                     empiler_etat_mot(&pile_sys, etat_mot_aig);
                     // empiler le chemin (l'instruction)
                     empiler_instruction(&pile_sys_inst, automate->ensemble_instruction[i]);
@@ -822,7 +850,7 @@ Instruction **rechercher_chemins_reussi(Automate *automate, Mot *mot, int vect_t
          ) {
                 if (((pile_sys->etat_mot->etat->status == FINAL || pile_sys->etat_mot->etat->status == INITIAL_FINAL) &&
                     (!strcmp(pile_sys->etat_mot->mot->vecteur_mot[0], EPSILON)))) {
-                        //printf("DONE === \n");
+                        printf("DONE === \n");
                         //afficher_pile_etat_mot(pile_sys);puts("PATH");
                         //afficher_pile_instruction(pile_sys_inst);
                         //ajouter le chemin a l'ensemble de retour
@@ -846,7 +874,7 @@ Instruction **rechercher_chemins_reussi(Automate *automate, Mot *mot, int vect_t
                 //puts("BEGIN");
                 p = depiler_etat_mot(&pile_sys);
                 depiler_instruction(&pile_sys_inst);
-                //printf("Depiler : ");afficher_etat(p->etat);printf(" <> ");afficher_mot(p->mot);puts(sauv->etat->nom);puts("");
+                printf("Depiler : ");afficher_etat(p->etat);printf(" <> ");afficher_mot(p->mot);puts(" ");puts(sauv->etat->nom);puts("");
 
                 while (1) {
                     //afficher_pile_etat_mot(pile_sys);puts("");
@@ -855,7 +883,7 @@ Instruction **rechercher_chemins_reussi(Automate *automate, Mot *mot, int vect_t
                         p = depiler_etat_mot(&pile_sys);
                         depiler_instruction(&pile_sys_inst);
                         //printf("%d ---- ", p != NULL && !strcmp(p->etat->nom, sauv->etat->nom));
-                        //printf("Depiler : ");afficher_etat(p->etat);printf(" <> ");afficher_mot(p->mot);puts("");
+                        printf("Depiler : ");afficher_etat(p->etat);printf(" <> ");afficher_mot(p->mot);puts("");
                     } else {
                         break;
                     }

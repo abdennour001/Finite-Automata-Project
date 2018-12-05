@@ -17,7 +17,7 @@
 #include "../interface.h"
 
 void test_unitaire() {
-    Automate* automate = nouvelle_automate("./tests/Automate simple.init");
+    Automate* automate = nouvelle_automate("./tests/Automate2.init");
     //Etat* e=creer_etat(++ID_ETAT_SYS, "new_etat1", FINAL);
     //Etat* e1=creer_etat(++ID_ETAT_SYS, "new_etat2", NORMAL);
     //Etat* e2=creer_etat(++ID_ETAT_SYS, "new_etat3", FINAL);

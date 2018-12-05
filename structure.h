@@ -14,7 +14,7 @@
  * 
  * **/
 
-#define MAX_INT 1000
+#define MAX_INT 100000
 #define EPSILON "~"
 
 

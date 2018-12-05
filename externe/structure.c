@@ -68,6 +68,7 @@ Etat *depiler(Pile **p)
         sauv = *p ;
         return_val = sauv->etat;
         *p = suivant(*p);
+        free(sauv);
         sauv = NULL;
     }
     else
@@ -135,6 +136,7 @@ PEtat_mot *depiler_etat_mot(Pile_etat_mot **p) {
         sauv = *p ;
         return_val = sauv->etat_mot;
         *p = suivant_etat_mot(*p);
+        free(sauv);
         sauv = NULL;
     }
     else
@@ -212,6 +214,7 @@ Instruction *depiler_instruction(Pile_instruction **p)
         sauv = *p ;
         return_val = sauv->instruction;
         *p = suivant_instruction(*p);
+        free(sauv);
         sauv = NULL;
     }
     else

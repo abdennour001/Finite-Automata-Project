@@ -17,7 +17,14 @@
 #include "../interface.h"
 
 void test_unitaire() {
-    Automate* automate = nouvelle_automate("./tests/Automate2.init");
+    init_base_automate();
+    Automate* automate = nouvelle_automate("./tests/Automate simple.init");
+    Automate* automate2 = nouvelle_automate("./tests/Automate2.init");
+    Automate* automate3 = nouvelle_automate("./tests/Automate.init");
+    ajouter_automate_au_base(automate);
+    ajouter_automate_au_base(automate2);
+    ajouter_automate_au_base(automate3);
+
     //Etat* e=creer_etat(++ID_ETAT_SYS, "new_etat1", FINAL);
     //Etat* e1=creer_etat(++ID_ETAT_SYS, "new_etat2", NORMAL);
     //Etat* e2=creer_etat(++ID_ETAT_SYS, "new_etat3", FINAL);
@@ -38,7 +45,7 @@ void test_unitaire() {
     strcpy(vect1[1], "b");
     strcpy(vect1[2], "a");
 
-    Mot *mot = lire_mot();
+    //Mot *mot = lire_mot();
 
     // tester pile instruction
     /*Pile_instruction *p=NULL;
@@ -86,7 +93,9 @@ void test_unitaire() {
     //automate = rendez_deterministe(automate);
     //afficher_automate(automate);
     
-    aff_chemin_reussi(automate, mot);
+    //aff_msg_debut();
+    aff_menu_de_base__();
+    //aff_chemin_reussi(automate, mot);
 
     /*Pile_etat_mot *p=NULL;
     PEtat_mot *etat_mot = creer_etat_mot(e, m);

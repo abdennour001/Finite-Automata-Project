@@ -58,6 +58,14 @@ int etat_est_Co_accessible(Automate* a, Etat* etat);
 int rendez_simple(Automate* automate);
 Automate *rendez_deterministe(Automate* automate);
 void rendez_complet(Automate* automate);
+
+// nouveau 
+Automate *union_deux_automate(Automate *a1, Automate *a2);
+Automate *concat_deux_automate(Automate *a1, Automate *a2);
+Automate *automate_etoile(Automate *a);
+Automate *complement_automate(Automate *a);
+Automate *miroire_automate(Automate *a);
+
 /***
  * 
  * etat_initial_de_parcoure : c'est l'état qu'on va parcourir l'automate a partir de lui

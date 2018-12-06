@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "structure.h"
+#include "interface.h"
 
 
 int ID_ETAT_SYS=0;
@@ -48,14 +49,18 @@ void set_status(Etat* e, Status s) {
     e->status = s;
 }
 void afficher_etat(Etat* etat) {
-    printf("| %3d | %5s | %5s |", etat->id, etat->nom, status_to_string(etat->status));
+    printf("%s%s(%s %3d %s%s| %s%s%5s %s%s| %s%5s %s%s)%s",  KBLDON,KYEL, KNRM,etat->id,KBLDON,KYEL, 
+                                                        KBLDON, KCYN, etat->nom, KBLDON,KYEL, 
+                                                        KGRN, status_to_string(etat->status), KBLDON, KYEL, KNRM);
 }
 
 void afficher_etat_sans_detail(Etat* etat) {
-    if (etat->status == FINAL || etat->status == INITIAL_FINAL) {
-        printf("| %8s |*", etat->nom);
+    if (etat->status == INITIAL || etat->status == INITIAL_FINAL) {
+        printf("%s%s=>( %s%8s %s)%s", KBLDON, KWHT, KWHT,etat->nom, KWHT, KNRM);
+    } else if (etat->status == FINAL) {
+        printf("%s%s  ( %s%8s %s)*%s", KBLDON, KRED, KRED,etat->nom, KRED, KNRM);
     } else {
-        printf("| %8s |", etat->nom);
+        printf("%s%s  ( %s%8s %s)%s", KBLDON, KYEL, KCYN,etat->nom, KYEL, KNRM);
     }
 }
 
@@ -129,7 +134,7 @@ void set_nom_alphabet(Alphabet* a, char* nom) {
 }
 void afficher_alphabet(Alphabet* a) {
     char output[50];
-    sprintf(output, "%s = {", a->nom);
+    sprintf(output, "%s%s%s %s= {%s",KBLDON,KCYN ,a->nom, KYEL, KNRM);
     for (int i=0; i < a->nombre_lettres; i++) {
         if (i==0) {
             sprintf (output, "%s%s", output, a->ensemble_lettres[i]);
@@ -137,7 +142,7 @@ void afficher_alphabet(Alphabet* a) {
             sprintf (output, "%s, %s", output, a->ensemble_lettres[i]);
         }
     }
-    sprintf(output, "%s}\n", output);
+    sprintf(output, "%s%s%s}\n%s", output, KBLDON, KYEL, KNRM);
     printf("%s", output);
 }
 
@@ -208,17 +213,17 @@ void set_id_instruction(Instruction* i, int id) {
 
 void afficher_instruction(Instruction *i) {
     afficher_etat(i->etat_src);
-    printf("\t--\t");
+    printf("%s%s-[%s ", KBLDON,KYEL, KNRM);
     afficher_mot(i->mot);
-    printf("\t-->\t");
+    printf(" %s%s]->%s", KBLDON,KYEL, KNRM);
     afficher_etat(i->etat_dest);
 }
 
 void afficher_instruction_sans_detail(Instruction *i) {
     afficher_etat_sans_detail(i->etat_src);
-    printf("\t--\t");
+    printf("\t%s%s-[%s\t", KBLDON,KYEL, KNRM);
     afficher_mot(i->mot);
-    printf("\t-->\t");
+    printf("\t%s%s]->%s ", KBLDON,KYEL, KNRM);
     afficher_etat_sans_detail(i->etat_dest);
 }
 
@@ -356,30 +361,39 @@ void supprimer_instruction(Automate* a, Instruction* i) {
 }
 
 void afficher_automate(Automate *a) {
-    printf("%s < X, S0, F, S, II >\n\n", a->nom);
+    printf("%s%s[%s%s*%s%s] Automate :\n\n%s",KBLDON, KYEL, KNRM, KRED, KBLDON, KYEL, KNRM );
+    printf("   %s%s%s %s< X, S0, F, S, II >\n\n%s", KBLDON, KCYN, a->nom, KYEL, KNRM);
     // Afficher X
-    printf("Alphabet X : \n\n");
-    afficher_alphabet(a->alphabet);printf("\n");
+    printf("%s%s[%s*%s%s]%s ",KBLDON, KYEL, KRED, KBLDON, KYEL, KNRM );
+    printf("%s%sAlphabet X : %s\n\n", KBLDON, KYEL, KNRM);
+    printf("   ");afficher_alphabet(a->alphabet);printf("\n");
     // Afficher S0
-    printf("Etat initial S0 : \n\n");
-    afficher_etat(a->etat_init);
+    printf("%s%s[%s*%s%s]%s ",KBLDON, KYEL, KRED, KBLDON, KYEL, KNRM );
+    printf("%s%sEtat initial S0 : \n\n%s", KBLDON, KYEL, KNRM);
+    printf("   ");afficher_etat(a->etat_init);
     printf("\n\n");
     // Afficher F
-    printf("Etats finaux F : \n\n");
+    printf("%s%s[%s*%s%s]%s ",KBLDON, KYEL, KRED, KBLDON, KYEL, KNRM );
+    printf("%s%sEtats finaux F : \n\n%s", KBLDON, KYEL, KNRM);
     for (int i=0; i < a->nombre_etats_finaux; i++) {
+        printf("   ");
         afficher_etat(a->ensemble_etat_finaux[i]);
         printf("\n");
     }
     printf("\n");
     // Afficher S
-    printf("Etats S : \n\n");
+    printf("%s%s[%s*%s%s]%s ",KBLDON, KYEL, KRED, KBLDON, KYEL, KNRM );
+    printf("%s%sEtats S : \n\n%s", KBLDON, KYEL, KNRM);
     for (int i=0; i < a->nombre_etat; i++) {
+        printf("   ");
         afficher_etat(a->ensemble_etat[i]);
         printf("\n");
     }
     // Afficher II
-    printf("\nInstructions II : \n\n");
+    printf("\n%s%s[%s*%s%s]%s ",KBLDON, KYEL, KRED, KBLDON, KYEL, KNRM );
+    printf("%s%sInstructions II : \n\n%s", KBLDON, KYEL, KNRM);
     for (int i=0; i < a->nombre_instructions; i++) {
+        printf("   ");
         afficher_instruction_sans_detail(a->ensemble_instruction[i]);
         printf("\n");
     }

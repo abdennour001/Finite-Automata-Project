@@ -29,9 +29,27 @@
 
 #define SIGNE1 "195"
 #define SIGNE2 "196"
+
+#define MAX_BASE 30 /* nombre maximum des automates par base */
+
+#define add printf("%s%s[%s+%s] %s",KBLDON, KYEL, KGRN, KYEL, KNRM);
+#define minus printf("%s%s[%s-%s] %s",KBLDON, KYEL, KRED, KYEL, KNRM);
+#define alert printf("%s%s[%s!%s] %s",KBLDON, KYEL, KRED, KYEL, KNRM);
+#define question printf("%s%s[%s?%s] %s",KBLDON, KYEL, KGRN, KYEL, KNRM);
+#define star printf("%s%s[%s*%s] %s",KBLDON, KYEL, KRED, KYEL, KNRM);
+
+/** Declaration fichier décoration **/
+extern char fichier_decoration[30];
+FILE* ouvrir_fichier_deco();
+
+/** base de donnée des automate **/
+extern Automate **base_automate;
+extern int nombre_automate;
+void init_base_automate();
+void ajouter_automate_au_base(Automate *a);
  
 void aff_msg_debut();
-void aff_menu();
+void aff_menu_de_base__();
 char *lire_nom_automate();
 void aff_chemin_reussi(Automate *automate, Mot *mot);
 

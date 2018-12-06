@@ -18,8 +18,8 @@
 
 int main(int argc, char const *argv[])
 {
-    printf("[ DEBUT ]\n\n");
+    //printf("[ DEBUT ]\n\n");
     test_unitaire();
-    printf("\n[ FIN ]\n");
+    //printf("\n[ FIN ]\n");
     return 0;
 }

@@ -397,7 +397,6 @@ void afficher_automate(Automate *a) {
         afficher_instruction_sans_detail(a->ensemble_instruction[i]);
         printf("\n");
     }
-    printf("\n");
 }
 
 /******/

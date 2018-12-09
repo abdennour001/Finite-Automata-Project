@@ -67,7 +67,6 @@ void aff_msg_debut() {
 }
 
 void aff_base_automate() {
-    puts("");
     char database[MAX_INT];
 
     add
@@ -88,10 +87,29 @@ void ajouter_automate_au_base(Automate *a) {
     nombre_automate++;
 }
 
-void aff_menu_de_base__() {
-    while (1) {
-        char commande_msg[MAX_INT];
-        aff_msg_debut();
+void aff_help(int i) {
+    if (i == 1) {
+        puts("");
+        question printf("%s%sOperations Unaire sur l'Automates (%sset> %s@numero_operation%s%s) %s", KBLDON, KYEL, KRED, KNRM ,KBLDON, KYEL,KNRM);
+        puts("");printf("\n\t");minus printf("%s%sAfficher l'automate %s (1)", KBLDON, KYEL, KNRM);
+        puts("");printf("\n\t");minus printf("%s%sTester si l'automate est Simple %s (2)", KBLDON, KYEL, KNRM);
+        puts("");printf("\n\t");minus printf("%s%sTester si l'automate est Complet %s (3)", KBLDON, KYEL, KNRM);
+        puts("");printf("\n\t");minus printf("%s%sTester si l'automate est Deterministe %s (4)", KBLDON, KYEL, KNRM);
+        puts("");printf("\n\t");minus printf("%s%sTester les états non accessible de l'automate %s (5)", KBLDON, KYEL, KNRM);
+        puts("");printf("\n\t");minus printf("%s%sTester les états non Co-accessible de l'automate %s (6)", KBLDON, KYEL, KNRM);
+        puts("");printf("\n\t");minus printf("%s%sRendez l'automate Simple %s (7)", KBLDON, KYEL, KNRM);
+        puts("");printf("\n\t");minus printf("%s%sRendez l'automate Complet %s (8)", KBLDON, KYEL, KNRM);
+        puts("");printf("\n\t");minus printf("%s%sRendez l'automate Deterministe %s (9)", KBLDON, KYEL, KNRM);
+
+        puts("");printf("\n\t");star printf("%s%sGenerer l'automate étoile %s (10)", KBLDON, KYEL, KNRM);
+        puts("");printf("\n\t");star printf("%s%sGenerer l'automate miroire %s (11)", KBLDON, KYEL, KNRM);
+        puts("");printf("\n\t");star printf("%s%sGenerer l'automate complément %s (12)", KBLDON, KYEL, KNRM);
+
+
+        puts("");puts("");alert printf("%s%sAfficher help (%sset> %shelp%s%s) %s", KBLDON, KYEL, KRED, KNRM, KBLDON, KYEL,KNRM);
+        puts("");minus printf("%s%sQuitter le programme (%sset> %sexit%s%s) %s", KBLDON, KYEL, KRED, KNRM, KBLDON, KYEL,KNRM);
+        puts("");  
+    } else {
         aff_base_automate(); puts("");
         add printf("%s%sAjouter une Automate à la base (%sset> %s%sadd %s@chemin_vers_fichier.init%s%s) %s\n", KBLDON, KYEL, KRED, KNRM, KRED, KNRM, KBLDON, KYEL,KNRM);
         puts("");minus printf("%s%sSupprimer une Automate de la base (%sset> %s%sremove %s@nom_automate%s%s) %s\n", KBLDON, KYEL, KRED, KNRM, KRED, KNRM, KBLDON, KYEL,KNRM);
@@ -101,9 +119,107 @@ void aff_menu_de_base__() {
         puts("");printf("\n\t");star printf("%s%sUnion %sA1 ∪ A2%s (1)", KBLDON, KYEL, KGRN, KNRM);
         printf("\n\t");star printf("%s%sConcaténation %sA1 ∘ A2%s (2)", KBLDON, KYEL, KGRN, KNRM);puts("");
 
+        puts("");alert printf("%s%sAfficher help (%sset> %shelp%s%s) %s", KBLDON, KYEL, KRED, KNRM, KBLDON, KYEL,KNRM);
         puts("");minus printf("%s%sQuitter le programme (%sset> %sexit%s%s) %s", KBLDON, KYEL, KRED, KNRM, KBLDON, KYEL,KNRM);
+    }
+}
 
-        puts("");puts("");printf("%s%sset> %s", KBLDON, KRED, KNRM);
+void aff_menu_automate(Automate *a) {
+    aff_help(1);puts("");puts("");
+    while (1) {
+        char commande_msg[MAX_INT];
+        printf("%s%sset> %s%s> %s", KBLDON, KRED, KGRN, a->nom, KNRM);
+        char input[MAX_INT]; char **lex; int len;
+        fgets(input, MAX_INT, stdin);
+        lex = separer_chaine(input, " \n", &len);
+        switch (len) {
+            case 1:
+                // exit
+                if (!strcmp(lex[0], "exit")) {
+                    star printf("L'automate %s%s%s%s a été dé-sélectionnée.", KBLDON, KGRN, a->nom, KNRM);
+                    return;
+                } else if (!strcmp(lex[0], "help")) {
+                    aff_help(1);
+                } else if (!strcmp(lex[0], "show")) {
+                    aff_base_automate();
+                } else if (!strcmp(lex[0], "1")) {
+                    afficher_automate(a);
+                } else if (!strcmp(lex[0], "2")) {
+                    if (auto_est_simple(a)) {
+                        star printf("L'automate %s%s%s%s est simple.", KBLDON, KGRN, a->nom, KNRM);
+                    } else {
+                        star printf("L'automate %s%s%s%s n'est pas simple.", KBLDON, KGRN, a->nom, KNRM);
+                    }
+                } else if (!strcmp(lex[0], "3")) {
+                    if (auto_est_complet(a)) {
+                        star printf("L'automate %s%s%s%s est complet.", KBLDON, KGRN, a->nom, KNRM);
+                    } else {
+                        star printf("L'automate %s%s%s%s n'est pas complet.", KBLDON, KGRN, a->nom, KNRM);
+                    }
+                } else if (!strcmp(lex[0], "4")) {
+                    if (auto_est_deterministe(a)) {
+                        star printf("L'automate %s%s%s%s est deterministe.", KBLDON, KGRN, a->nom, KNRM);
+                    } else {
+                        star printf("L'automate %s%s%s%s n'est pas deterministe.", KBLDON, KGRN, a->nom, KNRM);
+                    }
+                } else if (!strcmp(lex[0], "5")) {
+                    int sauv=0;
+                    for (int i=0; i<a->nombre_etat; i++) {
+                        if (!etat_est_accessible(a, a->ensemble_etat[i])) {
+                            star printf("L'état %s%s%s%s est un etat non accessible.\n", KBLDON, KGRN, a->ensemble_etat[i]->nom, KNRM); 
+                            if (!sauv) sauv=1;
+                        }
+                    }
+                    if (!sauv) {
+                        alert printf("L'automate %s%s%s%s n'a pas des etats non accessible.", KBLDON, KGRN, a->nom, KNRM); 
+                    }
+                } else if (!strcmp(lex[0], "6")) {
+                    int sauv=0;
+                    for (int i=0; i<a->nombre_etat; i++) {
+                        if (!etat_est_Co_accessible(a, a->ensemble_etat[i])) {
+                            star printf("L'état %s%s%s%s est un etat non Co-accessible.\n", KBLDON, KGRN, a->ensemble_etat[i]->nom, KNRM); 
+                            if (!sauv) sauv=1;
+                        }
+                    }
+                    if (!sauv) {
+                        alert printf("L'automate %s%s%s%s n'a pas des etats non Co-accessible.", KBLDON, KGRN, a->nom, KNRM);                         
+                    }
+                } else if (!strcmp(lex[0], "7")) {
+                    alert printf("L'automate %s%s%s%s a été rendu simple.", KBLDON, KGRN, a->nom, KNRM);                    
+                    rendez_simple(a);
+                } else if (!strcmp(lex[0], "8")) {
+                    alert printf("L'automate %s%s%s%s a été rendu complet.", KBLDON, KGRN, a->nom, KNRM);                    
+                    rendez_simple(a);
+                } else if (!strcmp(lex[0], "9")) {
+                    puts("HI");
+                    alert printf("L'automate %s%s%s%s a été rendu deterministe.", KBLDON, KGRN, a->nom, KNRM);                    
+                    Automate *a2 = rendez_deterministe(a);
+                    ajouter_automate_au_base(a2);
+                } else if (!strcmp(lex[0], "10")) {
+                    
+                } else if (!strcmp(lex[0], "11")) {
+                    
+                } else if (!strcmp(lex[0], "12")) {
+                    
+                } else {
+                    printf("%s : Command not found", lex[0]);
+                }
+                
+                break;
+            default:
+                printf("%s : Command not found", lex[0]);
+                break;
+        }
+        free(lex);puts("");
+    }
+}
+
+void aff_menu_de_base__() {
+    aff_msg_debut();
+    puts("");aff_help(-222);puts("");puts("");
+    while (1) {
+        char commande_msg[MAX_INT];
+        printf("%s%sset> %s", KBLDON, KRED, KNRM);
         char input[MAX_INT]; char **lex; int len;
         fgets(input, MAX_INT, stdin);
         lex = separer_chaine(input, " \n", &len);
@@ -112,24 +228,58 @@ void aff_menu_de_base__() {
                 // exit
                 if (!strcmp(lex[0], "exit")) {
                     exit(0);
+                } else if (!strcmp(lex[0], "help")) {
+                    aff_help(-222);
+                } else if (!strcmp(lex[0], "show")) {
+                    aff_base_automate();
+                } else {
+                    printf("%s : Command not found", lex[0]);
                 }
                 break;
             case 2:
                 // operation unitaire
                 if (!strcmp(lex[0], "add")) {
                     // ajouter automate
-                    puts("add");
                     Automate *automate=nouvelle_automate(lex[1]);
                     ajouter_automate_au_base(automate);
-                    
+                    add printf("L'automate %s%s%s%s à été ajoutée.", KBLDON, KGRN, automate->nom, KNRM);
                 } else if(!strcmp(lex[0], "remove")) {
-                    // supprimer automate 
-                    puts("remove");
+                    // supprimer automate
+                    int sauv = nombre_automate;
+                    for (int i=0; i<nombre_automate; i++) {
+                        if (!strcmp(lex[1], base_automate[i]->nom)) {
+                            minus printf("L'automate %s%s%s%s a été supprimée de la base.", KBLDON, KGRN, base_automate[i]->nom, KNRM);
+                            for (int j=i; j<nombre_automate-1; j++) {
+                                base_automate[j] = base_automate[j+1];
+                            }
+                            nombre_automate--;
+                            break;
+                        }
+                    } 
+                    if (sauv == nombre_automate) {
+                        alert printf("L'automate %s%s%s%s n'existe pas dans la base.", KBLDON, KGRN, lex[1], KNRM);
+                    }
                 } else if (!strcmp(lex[0], "select")) {
                     // selectionner une automate
-                    puts("select");
+                    int sauv=0;
+                    for (int i=0; i<nombre_automate; i++) {
+                        if (!strcmp(lex[1], base_automate[i]->nom)) {
+                            sauv = 1;
+                            // HI
+                            star printf("L'automate %s%s%s%s a été sélectionnée.\n", KBLDON, KGRN, lex[1], KNRM);
+                            alert printf("Commande help pour afficher le menu.");
+                            puts("");  
+                            aff_menu_automate(base_automate[i]);
+                            puts("");  
+                        }
+                    }
+                    if (!sauv) {
+                        alert printf("L'automate %s%s%s%s n'existe pas dans la base.", KBLDON, KGRN, lex[1], KNRM);
+                    }
+                } else {
+                    printf("%s : Command not found", lex[0]);
                 }
-                break;
+                 break;
             case 3:
                 // operation binaire
                 if (!strcmp(lex[1], "1")) {
@@ -141,9 +291,10 @@ void aff_menu_de_base__() {
                 }
                 break;
             default:
+                printf("%s : Command not found", lex[0]);
                 break;
         }
-        free(lex);
+        free(lex);puts("");
     }
 }
 

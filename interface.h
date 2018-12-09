@@ -50,6 +50,8 @@ void ajouter_automate_au_base(Automate *a);
  
 void aff_msg_debut();
 void aff_menu_de_base__();
+void aff_menu_automate(Automate *a);
+void aff_help();
 char *lire_nom_automate();
 void aff_chemin_reussi(Automate *automate, Mot *mot);
 

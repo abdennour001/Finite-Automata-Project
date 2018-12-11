@@ -1,19 +1,19 @@
 DEBUT;
 Automate#2 < X, S0, F, S, II >
-Y2 2
+Y2 4
 4
 8
-0 1
+0 1 2 3
 q1 INIT
 q2
 q3
 q4 FINAL
-q1,0,q1
+q1,0 1 2 3,q1
 q1,1,q1
 q1,1,q2
 q2,0,q3
 q2,,q3
-q3,1,q4
+q3,1 3 ,q4
 q4,1,q4
-q4,0,q4
+q4,0 2 3,q4
 FIN;

@@ -427,7 +427,7 @@ int rendez_simple(Automate* automate) {
             }
         }
     }
-
+    
     for (int p=0; p<elm_; p++) {
         supprimer_instruction(automate, ensemble_a_eliminer[p]);
     }

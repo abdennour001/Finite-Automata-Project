@@ -1,18 +1,18 @@
 DEBUT;
-A1 < X, S0, F, S, II >
-Y 4
+A_impossible < X, S0, F, S, II >
+Y 2
 10
 13
-a b c d
+a b
 S0 INIT
-S1 INIT
+S1
 S2 FINAL
 S3 FINAL
-S4 FINAL
-S5 INIT
-S6 FINAL
+S4
+S5
+S6
 S7 
-S8 FINAL
+S8
 S9
 S0, a, S1
 S0, a b, S2
@@ -21,10 +21,10 @@ S1, a, S2
 S2, a a,S2
 S1,,S0
 S6,,S6
-S6, a b c, S5
-S5, a b c d, S5
-S1, c a a, S5
+S6, a b, S5
+S5, a b, S5
+S1,a a, S5
 S9,,S8
-S9, a b c d, S1
-S4, d, S4
+S9, a b, S1
+S4,, S4
 FIN;

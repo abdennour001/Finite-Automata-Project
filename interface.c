@@ -90,6 +90,7 @@ void ajouter_automate_au_base(Automate *a) {
 void aff_help(int i) {
     if (i == 1) {
         puts("");
+        question printf("%s%sTester si un mot est reconu par l'Automate %s (0)", KBLDON, KYEL, KNRM);puts("");
         question printf("%s%sOperations Unaire sur l'Automates (%sset> %s@numero_operation%s%s) %s", KBLDON, KYEL, KRED, KNRM ,KBLDON, KYEL,KNRM);
         puts("");printf("\n\t");minus printf("%s%sAfficher l'automate %s (1)", KBLDON, KYEL, KNRM);
         puts("");printf("\n\t");minus printf("%s%sTester si l'automate est Simple %s (2)", KBLDON, KYEL, KNRM);
@@ -142,7 +143,10 @@ void aff_menu_automate(Automate *a) {
                     aff_help(1);
                 } else if (!strcmp(lex[0], "show")) {
                     aff_base_automate();
-                } else if (!strcmp(lex[0], "1")) {
+                } else if (!strcmp(lex[0], "0")) {
+                    Mot *mot = lire_mot();
+                    aff_chemin_reussi(a, mot);
+                } if (!strcmp(lex[0], "1")) {
                     afficher_automate(a);
                 } else if (!strcmp(lex[0], "2")) {
                     if (auto_est_simple(a)) {
@@ -189,12 +193,17 @@ void aff_menu_automate(Automate *a) {
                     rendez_simple(a);
                 } else if (!strcmp(lex[0], "8")) {
                     alert printf("L'automate %s%s%s%s a été rendu complet.", KBLDON, KGRN, a->nom, KNRM);                    
-                    rendez_simple(a);
+                    rendez_complet(a);
                 } else if (!strcmp(lex[0], "9")) {
-                    puts("HI");
-                    alert printf("L'automate %s%s%s%s a été rendu deterministe.", KBLDON, KGRN, a->nom, KNRM);                    
                     Automate *a2 = rendez_deterministe(a);
-                    ajouter_automate_au_base(a2);
+                    ajouter_automate_au_base(a2);   
+                    alert printf("L'automate %s%s%s%s a été rendu deterministe et sa version deterministe %s%s%s %sest dans la base.", KBLDON, KGRN, a->nom, KNRM, KBLDON, KGRN, a2->nom, KNRM);                    
+                    puts(""); question printf("Afficher la version déterministe (Y/n) ");     
+                    char rep[5];
+                    scanf("%s", rep);fflush(stdin);
+                    if (!strcmp(rep, "y")) {
+                        afficher_automate(a2);
+                    }
                 } else if (!strcmp(lex[0], "10")) {
                     
                 } else if (!strcmp(lex[0], "11")) {
@@ -204,7 +213,6 @@ void aff_menu_automate(Automate *a) {
                 } else {
                     printf("%s : Command not found", lex[0]);
                 }
-                
                 break;
             default:
                 printf("%s : Command not found", lex[0]);
@@ -270,7 +278,8 @@ void aff_menu_de_base__() {
                             alert printf("Commande help pour afficher le menu.");
                             puts("");  
                             aff_menu_automate(base_automate[i]);
-                            puts("");  
+                            puts("");
+                            break; 
                         }
                     }
                     if (!sauv) {
@@ -296,16 +305,7 @@ void aff_menu_de_base__() {
         }
         free(lex);puts("");
     }
-}
-
-char *lire_nom_automate() {
-    char mot__[MAX_INT]; char **__mot__; int l;
-    printf("%s%s[?]%s Faire entrée le nom de fichier .init qui contien l'automate : %s%s[regex : letter_1.lettre_2.(...)]\n\n%s>>> %s", KGRN, KBLDON, KNRM ,KGRN, KBLDON, KRED, KNRM);
-    scanf("%s", mot__);printf("\n");
-    __mot__ = separer_chaine(mot__, ".\n", &l);
-    Mot *mot_retour = creer_mot(l, __mot__);     
-    return mot_retour;
-}
+}   
 
 void aff_chemin_reussi(Automate *automate, Mot *mot) {
 
@@ -393,8 +393,8 @@ void aff_chemin_reussi(Automate *automate, Mot *mot) {
 
 Mot *lire_mot() {
     char mot__[MAX_INT]; char **__mot__; int l;
-    printf("%s%s[?]%s Faire entrée un mot : %s%s[regex : letter_1.lettre_2.(...)]\n\n%s>>> %s", KGRN, KBLDON, KNRM ,KGRN, KBLDON, KRED, KNRM);
-    scanf("%s", mot__);printf("\n");
+    printf("%s%s[?]%s Faire entrée un mot : %s%s[regex : letter_1.lettre_2.(...)]\n%s> %s", KGRN, KBLDON, KNRM ,KGRN, KBLDON, KRED, KNRM);
+    scanf("%s", mot__);printf("\n");fflush(stdin);
     __mot__ = separer_chaine(mot__, ".\n", &l);
     Mot *mot_retour = creer_mot(l, __mot__);
     return mot_retour;

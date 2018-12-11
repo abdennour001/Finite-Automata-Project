@@ -17,18 +17,21 @@
 #include "../interface.h"
 
 void test_unitaire() {
+
     init_base_automate();
-    Automate* automate = nouvelle_automate("./tests/Automate simple.init");
-    Automate* automate2 = nouvelle_automate("./tests/Automate2.init");
-    Automate* automate3 = nouvelle_automate("./tests/Automate.init");
+    Automate* automate = nouvelle_automate("./demo/Automate1.init");
+    Automate* automate2 = nouvelle_automate("./demo/Automate2.init");
+    Automate* automate3 = nouvelle_automate("./demo/Automate3.init");
     ajouter_automate_au_base(automate);
     ajouter_automate_au_base(automate2);
     ajouter_automate_au_base(automate3);
 
+    
+
     //Etat* e=creer_etat(++ID_ETAT_SYS, "new_etat1", FINAL);
     //Etat* e1=creer_etat(++ID_ETAT_SYS, "new_etat2", NORMAL);
     //Etat* e2=creer_etat(++ID_ETAT_SYS, "new_etat3", FINAL);
-    char *vect1[MAX_INT];
+    /*char *vect1[MAX_INT];
     char *vect2[MAX_INT];
     vect1[0] = (char *) malloc(MAX_INT * sizeof(char));
     vect1[1] = (char *) malloc(MAX_INT * sizeof(char));
@@ -39,11 +42,11 @@ void test_unitaire() {
     vect2[3] = (char *) malloc(MAX_INT * sizeof(char));
     vect2[4] = (char *) malloc(MAX_INT * sizeof(char));
     vect2[5] = (char *) malloc(MAX_INT * sizeof(char));
-    vect2[6] = (char *) malloc(MAX_INT * sizeof(char));
+    vect2[6] = (char *) malloc(MAX_INT * sizeof(char));*/
 
-    strcpy(vect1[0], "~");
+    /*strcpy(vect1[0], "~");
     strcpy(vect1[1], "b");
-    strcpy(vect1[2], "a");
+    strcpy(vect1[2], "a");*/
 
     //Mot *mot = lire_mot();
 
@@ -60,10 +63,10 @@ void test_unitaire() {
     afficher_pile_instruction(p); */
 
 
-    strcpy(vect2[0], "b");strcpy(vect2[1], "a");strcpy(vect2[2], "b");strcpy(vect2[3], "a");strcpy(vect2[4], "b");
+    /*strcpy(vect2[0], "b");strcpy(vect2[1], "a");strcpy(vect2[2], "b");strcpy(vect2[3], "a");strcpy(vect2[4], "b");
     strcpy(vect2[5], "b");strcpy(vect2[6], "b");
     Mot *m=creer_mot(1, vect1);
-    Mot *m2=creer_mot(7, vect2);
+    Mot *m2=creer_mot(7, vect2);*/
     //ajouter_etat(automate, e);
     //ajouter_etat(automate, e1);
     //ajouter_etat(automate, e2);
@@ -90,7 +93,7 @@ void test_unitaire() {
 
     //afficher_automate(automate);
     //rendez_simple(automate);
-    //automate = rendez_deterministe(automate);
+    //automate3 = rendez_deterministe(automate3);
     //afficher_automate(automate);
     
     //aff_msg_debut();

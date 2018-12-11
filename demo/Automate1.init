@@ -1,0 +1,17 @@
+DEBUT;
+A_1 < X, S0, F, S, II >
+Alph_1 2
+4
+6
+a b
+S0 INIT
+S1
+S2
+S3 FINAL
+S0, a, S1
+S0, b, S2
+S2, a, S0
+S1, a, S3
+S3, b, S3
+S1, b, S3
+FIN;

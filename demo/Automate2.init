@@ -1,0 +1,20 @@
+DEBUT;
+A_2 < X, S0, F, S, II >
+Alph_2 2
+4
+9
+a b
+S0 INIT&FINAL
+S1
+S2
+S3 FINAL
+S0, a, S1
+S0, a b, S2
+S0, b, S2
+S0,, S3
+S2, a, S0
+S2, b a, S2
+S1, a b a b a b a b, S3
+S3, b, S3
+S0, b,S1
+FIN;
